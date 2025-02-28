@@ -100,18 +100,15 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="dropdown-item" href="{{ route('logout') }}"
-                onclick="event.preventDefault();
-                                                   document.getElementById('logout-form').submit();">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
-
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                @csrf
-            </form>
-
-            </a>
-        </li>
+          <a class="nav-link" href="{{ route('logout') }}"
+              onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              <i class="fas fa-power-off fa-lg"></i>
+          </a>
+      
+          <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+              @csrf
+          </form>
+      </li>           
     </ul>
 </nav>
 <!-- /.navbar -->
