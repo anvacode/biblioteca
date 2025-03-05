@@ -15,7 +15,7 @@
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     <style>
         body {
-            background-image: url("{{ asset('images/library-background.webp') }}");
+            background-image: url("{{ asset('images/library_2.avif') }}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -30,15 +30,15 @@
 
 <body class="font-sans antialiased flex items-center justify-center min-h-screen">
     <div class="login-box w-full max-w-md p-8">
-        <div class="login-logo text-center mb-6">
+        <div class="login-logo text-center mb-2">
             <a href="{{ url('/') }}">
-                <img src="{{ asset('images/library_folder.png') }}" alt="Logo Biblioteca Digital" class="w-24 mx-auto">
+                <img src="{{ asset('images/library_folder.png') }}" alt="Logo Biblioteca Digital" class="w-20 mx-auto">
             </a>
         </div>
 
         <div class="card">
             <div class="card-body login-card-body p-6">
-                <p class="text-center text-xl font-semibold mb-6 text-gray-800">Inicia sesión para comenzar</p>
+                <p class="text-center text-lg font-semibold mb-6 text-gray-800">Inicia sesión para comenzar</p>
 
                 @if (session('status'))
                     <div class="alert alert-success" role="alert">
