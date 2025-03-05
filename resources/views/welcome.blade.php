@@ -19,40 +19,32 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            min-height: 100vh; /* Asegura que el fondo cubra toda la pantalla */
+            min-height: 100vh;
         }
     </style>
 </head>
 
 <body class="font-sans antialiased">
-    <!-- Contenedor principal con la imagen de fondo -->
-    <div class="bg-library text-white min-h-screen flex flex-col">
-
-        <!-- Contenido centrado sin fondo semitransparente -->
+    <div class="bg-library text-white flex flex-col flex-grow min-h-screen">
         <div class="flex-1 flex flex-col items-center justify-center">
             <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl p-8 rounded-lg">
                 <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
                     <div class="flex lg:justify-center lg:col-start-2 items-center space-x-4">
-                        <!-- Logo -->
-                        <img src="{{ asset('images/library_folder.png') }}" alt="Logo Biblioteca" class="h-28 w-auto">
-                        <!-- Título -->
+                        <img src="{{ asset('images/library_folder.png') }}" alt="Logo de la Biblioteca Digital" class="h-28 w-auto">
                         <h1 class="text-5xl font-bold">Biblioteca Digital</h1>
                     </div>
                     @if (Route::has('login'))
-                        <nav class="-mx-3 flex flex-1 justify-end">
+                        <nav class="-mx-3 flex flex-1 justify-end space-x-4">
                             @auth
-                                <a href="{{ url('/dashboard') }}"
-                                    class="rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none focus-visible:ring-[#FF2D20]">
+                                <a href="{{ url('/dashboard') }}" class="rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none focus-visible:ring-[#FF2D20]">
                                     
                                 </a>
                             @else
-                                <a href="{{ route('login') }}"
-                                    class="rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none focus-visible:ring-[#FF2D20]">
+                                <a href="{{ route('login') }}" class="rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none focus-visible:ring-[#FF2D20]">
                                     
                                 </a>
                                 @if (Route::has('register'))
-                                    <a href="{{ route('register') }}"
-                                        class="rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none focus-visible:ring-[#FF2D20]">
+                                    <a href="{{ route('register') }}" class="rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none focus-visible:ring-[#FF2D20]">
                                         
                                     </a>
                                 @endif
@@ -60,27 +52,22 @@
                         </nav>
                     @endif
                 </header>
-
                 <main class="mt-6 text-center">
                     <h2 class="text-3xl font-semibold">Bienvenido a la Biblioteca Digital</h2>
                     <p class="mt-4 text-lg">
                         Explora nuestra colección de libros, revistas y recursos digitales.
                     </p>
                     <div class="mt-8 space-x-4">
-                        <a href="{{ route('login') }}"
-                            class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">
+                        <a href="{{ route('login') }}" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">
                             Iniciar Sesión
                         </a>
-                        <a href="{{ route('register') }}"
-                            class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300">
+                        <a href="{{ route('register') }}" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300">
                             Registrarse
                         </a>
                     </div>
                 </main>
             </div>
         </div>
-
-        <!-- Footer en la parte inferior -->
         <footer class="py-8 text-center text-lg">
             Biblioteca Digital &copy; {{ date('Y') }}. Todos los derechos reservados.
         </footer>

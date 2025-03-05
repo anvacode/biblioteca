@@ -1,75 +1,81 @@
-@extends('layouts.applogin')
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-@section('content')
-<link rel="stylesheet" href="{{ asset('public/custom.css') }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Biblioteca Digital - Login</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('images/library_folder_13789.png') }}">
+    <!-- Styles / Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("{{ asset('images/library-background.webp') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .login-box {
+            background-color: rgba(255, 255, 255, 0.9); /* Fondo semitransparente */
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
 
-<div class="login-box">
-    <div class="login-logo">
-        <a href="{{ url('/') }}">
-            <img src="{{ asset('image.png') }}" alt="Logo" width="150">
-        </a>
-    </div>
+<body class="font-sans antialiased flex items-center justify-center min-h-screen">
+    <div class="login-box w-full max-w-md p-8">
+        <div class="login-logo text-center mb-6">
+            <a href="{{ url('/') }}">
+                <img src="{{ asset('images/library_folder.png') }}" alt="Logo Biblioteca Digital" class="w-24 mx-auto">
+            </a>
+        </div>
 
-    <div class="card">
-        <div class="card-body login-card-body">
-            <p class="login-box-msg">Inicia sesión para comenzar tu sesión</p>
+        <div class="card">
+            <div class="card-body login-card-body p-6">
+                <p class="text-center text-xl font-semibold mb-6 text-gray-800">Inicia sesión para comenzar</p>
 
-            @if (session('status'))
-                <div class="alert alert-success" role="alert">
-                    {{ session('status') }}
-                </div>
-            @endif
+                @if (session('status'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
+                @endif
 
-            <form action="{{ route('login') }}" method="post">
-                @csrf
-                <div class="input-group mb-3">
-                    <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                        placeholder="Correo electrónico" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-envelope"></span>
+                <form action="{{ route('login') }}" method="post">
+                    @csrf
+                    <div class="mb-5">
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Correo Electrónico</label>
+                        <div class="relative">
+                            <input type="email" name="email" id="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300" placeholder="Correo electrónico" required autocomplete="email" autofocus>
                         </div>
                     </div>
 
-                    @error('email')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
-                </div>
-
-                <div class="input-group mb-3">
-                    <input type="password" class="form-control @error('password') is-invalid @enderror" 
-                        placeholder="Contraseña" name="password" required autocomplete="current-password">
-
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
+                    <div class="mb-5">
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
+                        <div class="relative">
+                            <input type="password" name="password" id="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300" placeholder="Contraseña" required>
                         </div>
                     </div>
 
-                    @error('password')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
-                </div>
-
-                <div class="row justify-content-center my-4">
-                    <div class="col-6">
-                        <button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
+                    <div class="flex justify-center mt-6">
+                        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            Iniciar sesión
+                        </button>
                     </div>
-                </div>
-            </form>
+                </form>
 
-            <div class="justify-content-center">
-                <div class="mb-1">
-                    <a href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
+                <div class="text-center mt-6 space-y-3">
+                    <a href="{{ route('password.request') }}" class="text-blue-600 hover:underline">¿Olvidaste tu contraseña?</a>
+                    <p class="text-gray-600">¿No tienes una cuenta? <a href="{{ route('register') }}" class="text-blue-600 hover:underline">Regístrate</a></p>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</body>
 
-@endsection
+</html>
