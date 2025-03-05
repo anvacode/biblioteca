@@ -31,7 +31,7 @@
                 <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
                     <div class="flex lg:justify-center lg:col-start-2 items-center space-x-4">
                         <img src="{{ asset('images/library_folder.png') }}" alt="Logo de la Biblioteca Digital" class="h-28 w-auto">
-                        <h1 class="text-5xl font-bold">Biblioteca Digital</h1>
+                        <h1 class="text-6xl font-bold">Biblioteca Digital</h1>
                     </div>
                     @if (Route::has('login'))
                         <nav class="-mx-3 flex flex-1 justify-end space-x-4">
