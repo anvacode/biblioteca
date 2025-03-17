@@ -22,7 +22,7 @@
         background-color: rgba(255, 255, 255, 0.9); 
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         width: 100%;
-        max-width: 600px; 
+        max-width: 600px; /* Igual que en Login */
         padding: 2rem; 
         border-radius: 12px; 
         margin: auto; 
