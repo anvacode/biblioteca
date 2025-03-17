@@ -13,14 +13,14 @@ class Clasificacion extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'nombre' => $this->faker->word,
-        'descripcion' => $this->faker->sentence,
-        'estado' => '1',
-        'registrado_por' => \App\Models\User::factory()
+        'nombre',
+        'descripcion',
+        'estado',
+        'registrado_por'
     ];
 
     public function clasificacion()
     {
-        return $this->belongsToMany('Clasificacion::class');
+        return $this->belongsToMany(Clasificacion::class);
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.applogin')
 
-@section('title', 'Biblioteca Digital - Register') 
+@section('title', 'Biblioteca Digital - Register')
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -8,6 +8,7 @@
 
 <head>
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- FontAwesome -->
 </head>
 
 <style>
@@ -24,6 +25,7 @@
         max-width: 600px; 
         padding: 2rem; 
         border-radius: 12px; 
+        margin: auto; 
     }
     .register-box input {
         background-color: transparent; 
@@ -55,68 +57,154 @@
         height: auto; 
         margin-right: 12px; 
     }
+    .register-logo a {
+        color: #3b82f6; 
+        font-size: 1.5rem; 
+        font-weight: bold; 
+    }
+    .register-card-body {
+        padding: 2rem; 
+    }
+    .register-box-msg {
+        margin-bottom: 1.5rem; 
+        font-size: 1rem; 
+        color: #4b5563; 
+    }
+    .alert-success {
+        background-color: #d1fae5; 
+        color: #065f46; 
+        padding: 0.75rem; 
+        border-radius: 8px; 
+        margin-bottom: 1rem; 
+    }
+    .invalid-feedback {
+        color: #dc2626; 
+        font-size: 0.875rem; 
+        margin-top: 0.25rem; 
+    }
 </style>
 
 <div class="flex items-center justify-center min-h-screen">
     <div class="register-box">
-        <!-- Contenedor flexible para el logo y el título -->
-        <div class="flex items-center justify-center mb-6">
-            <a href="{{ url('/') }}">  
-                <img src="{{ asset('images/library_folder.png') }}" alt="Logo" class="logo"> 
+        <!-- Logo y título -->
+        <div class="register-logo">
+            <a href="{{ url('/') }}">
+                <span>Registrarse <i class="fas fa-user-plus ml-2"></i></span> <!-- Icono de FontAwesome -->
             </a>
-            <p class="text-center text-lg font-semibold text-gray-800">Crea una cuenta para empezar</p>
         </div>
-        <form action="{{ route('register') }}" method="POST">
-            @csrf
 
-            <!-- Nombre Completo -->
-            <div class="mb-3"> 
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
-                <input type="text" name="name" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 @error('name') border-red-500 @enderror" placeholder="Nombre completo" value="{{ old('name') }}" required>
-                @error('name')
-                    <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
-                @enderror
-            </div>
+        <!-- Formulario -->
+        <div class="register-card-body">
+            <p class="register-box-msg">Crea una cuenta para empezar.</p>
 
-            <!-- Correo Electrónico -->
-            <div class="mb-3"> 
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
-                <input type="email" name="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 @error('email') border-red-500 @enderror" placeholder="Correo electrónico" value="{{ old('email') }}" required>
-                @error('email')
-                    <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
-                @enderror
-            </div>
+            <form method="POST" action="{{ route('register') }}" id="registerForm">
+                @csrf
 
-            <!-- Contraseña -->
-            <div class="mb-3"> 
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-                <input type="password" name="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 @error('password') border-red-500 @enderror" placeholder="Contraseña" required>
-                @error('password')
-                    <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
-                @enderror
-            </div>
+                <!-- Campo de nombre completo -->
+                <div class="input-group mb-3">
+                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror"
+                        name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="Nombre completo">
 
-            <!-- Confirmar Contraseña -->
-            <div class="mb-3"> 
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirmar Contraseña</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 @error('password_confirmation') border-red-500 @enderror" placeholder="Confirmar contraseña" required>
-                @error('password_confirmation')
-                    <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
-                @enderror
-            </div>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                        </div>
+                    </div>
 
-            <!-- Botón Registrar -->
-            <div class="flex justify-center mt-4"> 
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    Registrar
-                </button>
-            </div>
-        </form>
+                    @error('name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
 
-        <div class="text-center mt-4"> 
-            <a href="{{ route('login') }}" class="text-blue-600 hover:underline">¿Ya tienes una cuenta? Inicia sesión</a>
+                <!-- Campo de correo electrónico -->
+                <div class="input-group mb-3">
+                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
+                        name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Correo electrónico">
+
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+
+                    @error('email')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+
+                <!-- Campo de contraseña -->
+                <div class="input-group mb-3">
+                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
+                        name="password" required placeholder="Contraseña">
+
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+
+                    @error('password')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+
+                <!-- Campo de confirmar contraseña -->
+                <div class="input-group mb-3">
+                    <input id="password-confirm" type="password" class="form-control"
+                        name="password_confirmation" required placeholder="Confirmar contraseña">
+
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón de registrarse -->
+                <div class="row">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-block">
+                            Registrarse
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Enlace para iniciar sesión -->
+            <p class="mt-3 mb-1">
+                ¿Ya tienes una cuenta? <a href="{{ route('login') }}">Inicia sesión</a>
+            </p>
         </div>
     </div>
 </div>
+
+<!-- SweetAlert Script -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        Swal.fire({
+            title: "Registrando cuenta",
+            text: "Por favor, espera un momento...",
+            icon: "info",
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        this.submit();
+    });
+</script>
 
 @endsection

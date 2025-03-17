@@ -1,81 +1,192 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@extends('layouts.applogin')
+
+@section('title', 'Biblioteca Digital - Login')
+
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+
+@section('content')
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Biblioteca Digital - Login</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('images/library_folder.png') }}">
-    <!-- Styles / Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
-    <style>
-        body {
-            background-image: url("{{ asset('images/library_2.avif') }}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-        .login-box {
-            background-color: rgba(255, 255, 255, 0.9); /* Fondo semitransparente */
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- FontAwesome -->
 </head>
 
-<body class="font-sans antialiased flex items-center justify-center min-h-screen">
-    <div class="login-box w-full max-w-md p-8">
-        <div class="login-logo text-center mb-2">
+<style>
+    body {
+        background-image: url("{{ asset('images/library_2.avif') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .login-box {
+        background-color: rgba(255, 255, 255, 0.9); 
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px; 
+        padding: 2rem; 
+        border-radius: 12px; 
+        margin: auto; 
+    }
+    .login-box input {
+        background-color: transparent; 
+        border: 1px solid #ddd; 
+        border-radius: 8px;
+        padding: 0.75rem;
+        width: 100%;
+        margin-bottom: 0.75rem; 
+    }
+    .login-box input:focus {
+        border-color: #3b82f6; 
+        outline: none;
+    }
+    .login-box button {
+        background-color: #3b82f6; 
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem;
+        width: 100%;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .login-box button:hover {
+        background-color: #2563eb; 
+    }
+    .logo {
+        width: 40px; 
+        height: auto; 
+        margin-right: 12px; 
+    }
+    .login-logo a {
+        color: #3b82f6; 
+        font-size: 1.5rem; 
+        font-weight: bold; 
+    }
+    .login-card-body {
+        padding: 2rem; 
+    }
+    .login-box-msg {
+        margin-bottom: 1.5rem; 
+        font-size: 1rem; 
+        color: #4b5563; 
+    }
+    .alert-success {
+        background-color: #d1fae5; 
+        color: #065f46; 
+        padding: 0.75rem; 
+        border-radius: 8px; 
+        margin-bottom: 1rem; 
+    }
+    .invalid-feedback {
+        color: #dc2626; 
+        font-size: 0.875rem; 
+        margin-top: 0.25rem; 
+    }
+</style>
+
+<div class="flex items-center justify-center min-h-screen">
+    <div class="login-box">
+        <!-- Logo y título -->
+        <div class="login-logo">
             <a href="{{ url('/') }}">
-                <img src="{{ asset('images/library_folder.png') }}" alt="Logo Biblioteca Digital" class="w-20 mx-auto">
+                <span>Iniciar Sesión <i class="fas fa-sign-in-alt ml-2"></i></span> <!-- Icono de FontAwesome -->
             </a>
         </div>
 
-        <div class="card">
-            <div class="card-body login-card-body p-6">
-                <p class="text-center text-lg font-semibold mb-6 text-gray-800">Inicia sesión para comenzar</p>
+        <!-- Mensaje de estado -->
+        @if (session('status'))
+            <div class="alert alert-success" role="alert">
+                {{ session('status') }}
+            </div>
+        @endif
 
-                @if (session('status'))
-                    <div class="alert alert-success" role="alert">
-                        {{ session('status') }}
-                    </div>
-                @endif
+        <!-- Formulario -->
+        <div class="login-card-body">
+            <p class="login-box-msg">Ingresa tus credenciales para acceder.</p>
 
-                <form action="{{ route('login') }}" method="post">
-                    @csrf
-                    <div class="mb-5">
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Correo Electrónico</label>
-                        <div class="relative">
-                            <input type="email" name="email" id="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300" placeholder="Correo electrónico" required autocomplete="email" autofocus>
+            <form method="POST" action="{{ route('login') }}" id="loginForm">
+                @csrf
+
+                <!-- Campo de correo electrónico -->
+                <div class="input-group mb-3">
+                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
+                        name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Correo electrónico">
+
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
                         </div>
                     </div>
 
-                    <div class="mb-5">
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
-                        <div class="relative">
-                            <input type="password" name="password" id="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300" placeholder="Contraseña" required>
+                    @error('email')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+
+                <!-- Campo de contraseña -->
+                <div class="input-group mb-3">
+                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
+                        name="password" required placeholder="Contraseña">
+
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
                         </div>
                     </div>
 
-                    <div class="flex justify-center mt-6">
-                        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    @error('password')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+
+                <!-- Botón de iniciar sesión -->
+                <div class="row">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-block">
                             Iniciar sesión
                         </button>
                     </div>
-                </form>
-
-                <div class="text-center mt-6 space-y-3">
-                    <a href="{{ route('password.request') }}" class="text-blue-600 hover:underline">¿Olvidaste tu contraseña?</a>
-                    <p class="text-gray-600">¿No tienes una cuenta? <a href="{{ route('register') }}" class="text-blue-600 hover:underline">Regístrate</a></p>
                 </div>
-            </div>
+            </form>
+
+            <!-- Enlace para recuperar contraseña -->
+            <p class="mt-3 mb-1">
+                <a href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
+            </p>
+
+            <!-- Enlace para registrarse -->
+            <p class="mt-3 mb-1">
+                ¿No tienes una cuenta? <a href="{{ route('register') }}">Regístrate</a>
+            </p>
         </div>
     </div>
-</body>
+</div>
 
-</html>
+<!-- SweetAlert Script -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        Swal.fire({
+            title: "Iniciando sesión",
+            text: "Por favor, espera un momento...",
+            icon: "info",
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        this.submit();
+    });
+</script>
+
+@endsection
