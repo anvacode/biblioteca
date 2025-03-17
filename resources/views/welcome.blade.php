@@ -15,7 +15,7 @@
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     <style>
         .bg-library {
-            background-image: url("{{ asset('images/library-background.webp') }}");
+            background-image: url("{{ asset('images/blue.jpg') }}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
