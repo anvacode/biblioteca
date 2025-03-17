@@ -13,7 +13,7 @@
 
 <style>
     body {
-        background-image: url("{{ asset('images/library_2.avif') }}");
+        background-image: url("{{ asset('images/login-back.jpg') }}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
