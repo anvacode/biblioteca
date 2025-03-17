@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Nexus Sapientia</title>
+    <title>Saber Athena</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -31,7 +31,7 @@
                 <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
                     <div class="flex lg:justify-center lg:col-start-2 items-center space-x-4">
                         <img src="{{ asset('images/library_folder.png') }}" alt="Logo de la Biblioteca" class="h-28 w-auto">
-                        <h1 class="text-6xl font-bold">Biblioteca Nexus Sapientia</h1>
+                        <h1 class="text-6xl font-bold">Saber Athena</h1>
                     </div>
                     @if (Route::has('login'))
                         <nav class="-mx-3 flex flex-1 justify-end space-x-4">
@@ -53,7 +53,7 @@
                     @endif
                 </header>
                 <main class="mt-6 text-center">
-                    <h2 class="text-3xl font-semibold">Bienvenido a la Biblioteca Nexus Sapientia</h2>
+                    <h2 class="text-3xl font-semibold">Bienvenido a la Biblioteca Saber Athena</h2>
                     <p class="mt-4 text-lg">
                         Explora nuestra colección de libros, revistas y recursos digitales.
                     </p>
@@ -69,7 +69,7 @@
             </div>
         </div>
         <footer class="py-8 text-center text-lg">
-            Nexus Sapientia &copy; {{ date('Y') }}. Todos los derechos reservados.
+            Saber Athena &copy; {{ date('Y') }}. Todos los derechos reservados.
         </footer>
     </div>
 </body>

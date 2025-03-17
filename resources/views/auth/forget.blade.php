@@ -1,6 +1,6 @@
 @extends('layouts.applogin')
 
-@section('title', 'Biblioteca Digital - Recuperar Contraseña')
+@section('title', 'Saber Athena - Recuperar Contraseña')
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
