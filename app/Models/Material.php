@@ -2,44 +2,43 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Material extends Model
 {
+    use HasFactory;
+
+    // Nombre de la tabla (opcional, si sigue la convención de nombres de Laravel)
     protected $table = 'materiales';
 
-    protected $primaryKey = 'id_materiales';
-
+    // Campos que se pueden asignar masivamente
     protected $fillable = [
-        'titulo', 
-        'isbn', 
-        'anyo',  
-        'estante',
-        'estado',    
-        'registradoPor',  
-        'fecha',
-        'personas_id_persona',  // Clave foránea
-        'categorias_idcategorias',  // Clave foránea
-        'editoriales_ideditoriales',  // Clave foránea
+        'clasificaciones_id',
+        'categorias_id',
+        'estantes_id',
+        'titulo',
+        'isbn',
+        'anyo',
+        'estado',
+        'registradoPor',
     ];
 
-    public function persona()
+    // Relación con la tabla `clasificaciones`
+    public function clasificacion()
     {
-        return $this->belongsTo(Persona::class, 'personas_id_persona');
+        return $this->belongsTo(Clasificacion::class, 'clasificaciones_id');
     }
 
+    // Relación con la tabla `categorias`
     public function categoria()
     {
-        return $this->belongsTo(Categoria::class, 'categorias_idcategorias');
+        return $this->belongsTo(Categoria::class, 'categorias_id');
     }
 
-    public function editorial()
+    // Relación con la tabla `estantes`
+    public function estante()
     {
-        return $this->belongsTo(Editorial::class, 'editoriales_ideditoriales');
-    }
-
-    public function ejemplares()
-    {
-        return $this->hasMany(Ejemplar::class, 'materiales_id_materiales');
+        return $this->belongsTo(Estante::class, 'estantes_id');
     }
 }

@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->timestamp('fecha_reserva');
             $table->string('estado');
-            $table->unsignedBigInteger('personas_id_persona');
-            $table->unsignedBigInteger('materiales_id_materiales');
+            $table->unsignedBigInteger('personas_id');
+            $table->unsignedBigInteger('materiales_id');
             $table->timestamps();
 
             // Claves foráneas
-            $table->foreign('personas_id_persona')->references('id')->on('personas');
-            $table->foreign('materiales_id_materiales')->references('id')->on('materiales');
+            $table->foreign('personas_id')->references('id')->on('personas');
+            $table->foreign('materiales_id')->references('id')->on('materiales');
         });
     }
 

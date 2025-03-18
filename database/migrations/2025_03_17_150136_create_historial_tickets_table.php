@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('historial_tickets', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('personas_id_persona');
+            $table->unsignedBigInteger('personas_id');
             $table->unsignedBigInteger('tickets_idtickets');
             $table->timestamp('fecha_cambio');
             $table->string('comentario');
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Claves foráneas
-            $table->foreign('personas_id_persona')->references('id')->on('personas');
+            $table->foreign('personas_id')->references('id')->on('personas');
             $table->foreign('tickets_idtickets')->references('id')->on('tickets');
         });
     }

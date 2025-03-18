@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Categoria extends Model
+class Estante extends Model
 {
     use HasFactory;
 
-    protected $table = 'categorias';
+    protected $table = 'estantes';
 
     protected $fillable = [
         'nombre', // Ajusta los campos según tu tabla
@@ -18,6 +18,6 @@ class Categoria extends Model
     // Relación con la tabla `materiales`
     public function materiales()
     {
-        return $this->hasMany(Material::class, 'categorias_id');
+        return $this->hasMany(Material::class, 'estantes_id');
     }
 }

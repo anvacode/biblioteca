@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('personas_id_persona');
-            $table->unsignedBigInteger('estados_tickets_idestados_tickets');
-            $table->unsignedBigInteger('tipo_tickets_idtipo_tickets');
+            $table->unsignedBigInteger('personas_id');
+            $table->unsignedBigInteger('estados_tickets');
+            $table->unsignedBigInteger('tipo_tickets');
             $table->timestamps();
 
             // Claves foráneas
-            $table->foreign('personas_id_persona')->references('id')->on('personas');
-            $table->foreign('estados_tickets_idestados_tickets')->references('id')->on('estados_tickets');
-            $table->foreign('tipo_tickets_idtipo_tickets')->references('id')->on('tipo_tickets');
+            $table->foreign('personas_id')->references('id')->on('personas');
+            $table->foreign('estados_tickets')->references('id')->on('estados_tickets');
+            $table->foreign('tipo_tickets')->references('id')->on('tipo_tickets');
         });
     }
 
