@@ -26,6 +26,7 @@
 </head>
 
 <body class="hold-transition login-page">
+    <!-- Define una sección que puede ser rellenada con contenido desde otras vistas -->
     @yield('content')
 
     <!-- jQuery -->

@@ -7,17 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Estante extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $table = 'estantes';
+  protected $table = 'estantes';
+  protected $primaryKey = 'id';
 
-    protected $fillable = [
-        'nombre', // Ajusta los campos según tu tabla
-    ];
+  protected $fillable = [
+  'section',
+  'shelf_number',
+  ];
 
-    // Relación con la tabla `materiales`
-    public function materiales()
-    {
-        return $this->hasMany(Material::class, 'estantes_id');
-    }
+  public function materiales()
+  {
+    return $this ->hasMany(Material::class, 'estante_id');
+  }
 }

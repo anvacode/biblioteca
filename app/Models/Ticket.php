@@ -9,10 +9,8 @@ class Ticket extends Model
 {
     use HasFactory;
 
-    // Nombre de la tabla (opcional, si sigue la convención de nombres de Laravel)
     protected $table = 'tickets';
 
-    // Campos que se pueden asignar masivamente
     protected $fillable = [
         'personas_id',
         'estados_tickets',

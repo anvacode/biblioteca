@@ -5,20 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TipoDocumento extends Model
+class Multa extends Model
 {
     use HasFactory;
 
-    protected $table = 'tipo_documento'; 
+    protected $table = 'multas'; 
     protected $primaryKey = 'id'; 
     protected $fillable = [
-        'nombre',
-        'abreviatura'
+        'total',
+        'multaPrestamo_id',
+        'persona_id'
     ];
 
-    public function personas()
+    
+    public function multaPrestamos()
     {
-        return $this->hasMany(Persona::class, 'tipo_documento_id');
+        return $this->hasMany(MultaPrestamo::class, 'multa_id');
     }
 }
 

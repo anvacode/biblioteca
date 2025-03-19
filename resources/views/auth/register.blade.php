@@ -1,6 +1,6 @@
 @extends('layouts.applogin')
 
-@section('title', 'Saber Athena - Register')
+@section('title', 'Saber Athena - Registro')
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -98,8 +98,8 @@
             <p class="register-box-msg">Crea una cuenta para empezar.</p>
 
             <form method="POST" action="{{ route('register') }}" id="registerForm">
+                <!-- Genera un token CSRF para proteger el formulario contra ataques Cross-Site Request Forgery -->
                 @csrf
-
                 <!-- Campo de nombre completo -->
                 <div class="input-group mb-3">
                     <input id="name" type="text" class="form-control @error('name') is-invalid @enderror"

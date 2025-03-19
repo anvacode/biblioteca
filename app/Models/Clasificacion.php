@@ -10,14 +10,18 @@ class Clasificacion extends Model
     use HasFactory;
 
     protected $table = 'clasificaciones';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
-        'nombre', // Ajusta los campos según tu tabla
+    'nombre',
+    'descripcion',
+    'estado',
+    'registradoPor',
     ];
 
-    // Relación con la tabla `materiales`
     public function materiales()
     {
-        return $this->hasMany(Material::class, 'clasificaciones_id');
+      return $this ->hasMany(Material::class, 'clasificacion_id');
     }
+   
 }

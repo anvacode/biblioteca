@@ -7,38 +7,40 @@ use Illuminate\Database\Eloquent\Model;
 
 class Material extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    // Nombre de la tabla (opcional, si sigue la convención de nombres de Laravel)
-    protected $table = 'materiales';
+  protected $table = 'materiales';
+  protected $primaryKey = 'id';
+  
+  protected $fillable = [
+  'titulo',
+  'ISBN',
+  'anio',
+  'estado',
+  'registradoPor',
+  'clasificacion_id',
+  ];
 
-    // Campos que se pueden asignar masivamente
-    protected $fillable = [
-        'clasificaciones_id',
-        'categorias_id',
-        'estantes_id',
-        'titulo',
-        'isbn',
-        'anyo',
-        'estado',
-        'registradoPor',
-    ];
-
-    // Relación con la tabla `clasificaciones`
-    public function clasificacion()
-    {
-        return $this->belongsTo(Clasificacion::class, 'clasificaciones_id');
-    }
-
-    // Relación con la tabla `categorias`
-    public function categoria()
-    {
-        return $this->belongsTo(Categoria::class, 'categorias_id');
-    }
-
-    // Relación con la tabla `estantes`
-    public function estante()
-    {
-        return $this->belongsTo(Estante::class, 'estantes_id');
-    }
+  public function clasificacion()
+  {
+    return $this ->belonsTo(Clasificacion::class);
+  }
+  public function categoria()
+  {
+    return $this ->belonsTo(Categoria::class);
+  }
+  public function estante()
+  {
+    return $this ->belonsTo(Estante::class);
+  }
+  public function materialAutor()
+  {
+    return $this ->hasMany(MaterialAutor::class, 'materialAutor_id');
+  }
+  public function prestamos()
+  {
+        return $this->hasMany(Prestamo::class, 'material_id');
+  }
+  
+  
 }

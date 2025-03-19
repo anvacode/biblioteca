@@ -11,7 +11,6 @@ class HistorialTicket extends Model
 
     protected $table = 'historial_tickets';
 
-    // Campos que se pueden asignar masivamente
     protected $fillable = [
         'personas_id',
         'tickets_idtickets',

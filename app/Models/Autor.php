@@ -5,23 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Categoria extends Model
+class Autor extends Model
 {
   use HasFactory;
 
-  protected $table = 'categorias';
+  protected $table = 'autores';
   protected $primaryKey = 'id';
 
   protected $fillable = [
   'nombre',
-  'codigoClasificacion',
-  'descripcion',
-  'estado',
-  'registradoPor',
+  'apellido',
+  'bibliografia',
   ];
 
-  public function materiales()
+  public function materialAutor()
   {
-    return $this ->hasMany(Material::class, 'categoria_id');
+    return $this ->hasMany(MaterialAutor::class, 'autor_id');
   }
 }

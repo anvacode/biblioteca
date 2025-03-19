@@ -9,21 +9,29 @@ class Persona extends Model
 {
     use HasFactory;
 
-    // Nombre de la tabla (opcional, si sigue la convención de nombres de Laravel)
-    protected $table = 'personas';
-
-    // Campos que se pueden asignar masivamente
+    protected $table = 'personas'; 
+    protected $primaryKey = 'id'; 
     protected $fillable = [
         'nombre',
-        'N_documento',
+        'n_documento',
         'correo',
         'telefono',
-        'tipoDocumento_id',
+        'total_multas',
+        'tipo_documento_id' 
     ];
 
-    // Relación con la tabla `tipo_documento`
+    
+    public function prestamos()
+    {
+        return $this->hasMany(Prestamo::class, 'persona_id');
+    }
     public function tipoDocumento()
     {
-        return $this->belongsTo(TipoDocumento::class, 'tipoDocumento_id');
+        return $this->belongsTo(TipoDocumento::class, 'tipo_documento_id');
     }
+    public function multas()
+    {
+        return $this->hasManyThrough(MultaPrestamo::class, Prestamo::class, 'persona_id', 'prestamo_id');
+    }
+
 }
