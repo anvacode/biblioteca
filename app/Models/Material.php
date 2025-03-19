@@ -37,10 +37,6 @@ class Material extends Model
   {
     return $this ->hasMany(MaterialAutor::class, 'materialAutor_id');
   }
-  public function prestamos()
-  {
-        return $this->hasMany(Prestamo::class, 'material_id');
-  }
   
   
 }

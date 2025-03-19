@@ -17,7 +17,9 @@ class Persona extends Model
         'correo',
         'telefono',
         'total_multas',
-        'tipo_documento_id' 
+        'tipo_documento_id',
+        'mantenimiento_id',
+        'inventario_id',
     ];
 
     
@@ -33,5 +35,12 @@ class Persona extends Model
     {
         return $this->hasManyThrough(MultaPrestamo::class, Prestamo::class, 'persona_id', 'prestamo_id');
     }
-
+    public function inventarios()
+    {
+        return $this->hasMany(Inventario::class, 'inventario_id');
+    }
+    public function mantenimientos()
+    {
+        return $this->hasMany(Mantenimiento::class, 'mantenimiento_id');
+    }
 }
