@@ -9,12 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('tipo_tickets', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre_tipo');
+            $table->string('nombre');
             $table->text('descripcion')->nullable();
+            $table->boolean('estado')->default(1);
             $table->timestamps();
         });
     }

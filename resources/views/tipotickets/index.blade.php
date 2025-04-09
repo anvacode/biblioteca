@@ -129,7 +129,7 @@ $(document).ready(function() {
         }, 300);
 
         // Aquí iría tu llamada AJAX para actualizar el estado en el servidor
-        /*
+        
         $.ajax({
             url: '/tipotickets/' + id + '/status',
             method: 'PATCH',
@@ -146,7 +146,6 @@ $(document).ready(function() {
                       .html(`<i class="fas ${currentEstado ? 'fa-check' : 'fa-times'} mr-1"></i> ${currentEstado ? 'Activo' : 'Inactivo'}`);
             }
         });
-        */
     });
 
     // Manejo del botón eliminar (solo para botones con clase btn-delete)

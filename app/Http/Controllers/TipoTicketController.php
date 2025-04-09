@@ -8,6 +8,15 @@ use App\Models\TipoTicket;
 
 class TipoTicketController extends Controller
 {
+    public function updateStatus(Request $request, $id)
+    {
+        $tipoticket = TipoTicket::findOrFail($id);
+        $tipoticket->estado = $request->estado;
+        $tipoticket->save();
+
+        return response()->json(['success' => true, 'message' => 'Estado actualizado correctamente']);
+    }
+    
     /**
      * Display a listing of the resource.
      */

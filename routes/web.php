@@ -115,6 +115,8 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::resource('tipotickets', TipoTicketController::class);
         Route::get('cambioestadotipoticket', [TipoTicketController::class, 'cambioestadotipoticket'])->name('cambioestadotipoticket');
+        Route::resource('tipotickets', TipoTicketController::class);
+        Route::patch('tipotickets/{id}/status', [TipoTicketController::class, 'updateStatus']);
     /*
     |--------------------------------------------------------------------------
     | Resource Routes (Commented - Ready for Implementation)

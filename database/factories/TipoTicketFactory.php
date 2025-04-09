@@ -11,39 +11,55 @@ class TipoTicketFactory extends Factory
 
     public function definition()
     {
-        // Tipos comunes de tickets 
         $tipos = [
-            'Soporte Técnico',
-            'Prestamo de Material',
-            'Consulta de Material',
-            'Incidente de Seguridad',
-            'Problema de Acceso',
+            'Soporte Técnico' => 'Problemas con hardware, software o equipos',
+            'Préstamo de Material' => 'Solicitud de préstamo de equipos o materiales',
+            'Consulta de Material' => 'Consultas sobre disponibilidad de materiales',
+            'Incidente de Seguridad' => 'Reporte de vulnerabilidades de seguridad',
+            'Problema de Acceso' => 'Dificultades para acceder a sistemas',
+            'Mantenimiento Preventivo' => 'Solicitud de mantenimiento programado',
+            'Capacitación' => 'Petición de entrenamiento o capacitación',
+            'Solicitud de Software' => 'Petición para instalación de programas',
+            'Problema de Red' => 'Inconvenientes con la conectividad',
+            'Configuración de Email' => 'Problemas con clientes de correo'
         ];
 
+        $tipo = $this->faker->randomElement(array_keys($tipos));
+        
         return [
-            'nombre_tipo' => $this->faker->unique()->randomElement($tipos),
-            'descripcion' => $this->faker->sentence(10), // Descripción aleatoria de 10 palabras
+            'nombre' => $tipo,
+            'descripcion' => $tipos[$tipo],
+            'estado' => $this->faker->boolean(90),
+            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now')
         ];
     }
 
-    // Métodos rápidos para tipos específicos (opcional)
+    // Métodos de estado para tipos específicos
     public function soporteTecnico()
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'nombre_tipo' => 'Soporte Técnico',
-                'descripcion' => 'Problemas relacionados con hardware, software o redes',
-            ];
-        });
+        return $this->state([
+            'nombre' => 'Soporte Técnico',
+            'descripcion' => 'Problemas relacionados con hardware, software o redes',
+            'estado' => true
+        ]);
     }
 
     public function incidenteSeguridad()
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'nombre_tipo' => 'Incidente de Seguridad',
-                'descripcion' => 'Reporte de vulnerabilidades o brechas de seguridad',
-            ];
-        });
+        return $this->state([
+            'nombre' => 'Incidente de Seguridad',
+            'descripcion' => 'Reporte de vulnerabilidades o brechas de seguridad',
+            'estado' => true
+        ]);
+    }
+
+    public function prestamoMaterial()
+    {
+        return $this->state([
+            'nombre' => 'Préstamo de Material',
+            'descripcion' => 'Gestión de préstamos de equipos y materiales',
+            'estado' => true
+        ]);
     }
 }

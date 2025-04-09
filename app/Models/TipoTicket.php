@@ -11,10 +11,7 @@ class TipoTicket extends Model
 
     protected $table = 'tipo_tickets';
 
-    protected $fillable = [
-        'nombre_tipo',
-        'descripcion',
-    ];
+    protected $fillable = ['nombre', 'descripcion', 'estado'];
     
     public function tickets()
     {
