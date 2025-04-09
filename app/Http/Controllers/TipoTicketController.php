@@ -3,28 +3,53 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\TipoTicket;
 
 class TipoTicketController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $tipotickets = TipoTicket::all();
+        return view('tipotickets.index', compact('tipotickets'));
+    }
+
+    /**
+     * Update the status of the specified resource.
+     */
     public function updateStatus(Request $request, $id)
     {
         $tipoticket = TipoTicket::findOrFail($id);
         $tipoticket->estado = $request->estado;
         $tipoticket->save();
 
-        return response()->json(['success' => true, 'message' => 'Estado actualizado correctamente']);
+        return response()->json([
+            'success' => true, 
+            'message' => 'Estado actualizado correctamente',
+            'newEstado' => $tipoticket->estado
+        ]);
     }
-    
+
     /**
-     * Display a listing of the resource.
+     * Remove the specified resource from storage.
      */
-    public function index()
+    public function destroy($id)
     {
-        $tipotickets=TipoTicket::all();
-        return view('tipotickets.index', compact('tipotickets'));
-        
+        try {
+            $tipoticket = TipoTicket::findOrFail($id);
+            $tipoticket->delete();
+            return response()->json([
+                'success' => true, 
+                'message' => 'Tipo de ticket eliminado correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Error al eliminar el tipo de ticket'
+            ]);
+        }
     }
 
     /**
@@ -32,7 +57,7 @@ class TipoTicketController extends Controller
      */
     public function create()
     {
-        //
+        return view('tipotickets.create');
     }
 
     /**
@@ -40,7 +65,15 @@ class TipoTicketController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string'
+        ]);
+
+        TipoTicket::create($validated);
+
+        return redirect()->route('tipotickets.index')
+            ->with('success', 'Tipo de ticket creado correctamente');
     }
 
     /**
@@ -56,7 +89,8 @@ class TipoTicketController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $tipoticket = TipoTicket::findOrFail($id);
+        return view('tipotickets.edit', compact('tipoticket'));
     }
 
     /**
@@ -64,20 +98,15 @@ class TipoTicketController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
-    }
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string'
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+        $tipoticket = TipoTicket::findOrFail($id);
+        $tipoticket->update($validated);
 
-    public function cambioestadotipoticket(Request $request){
-        $tipoticket = TipoTicket::find($request->id);
-        $tipoticket->estado = $request->estado;
-        $tipoticket->save();
+        return redirect()->route('tipotickets.index')
+            ->with('success', 'Tipo de ticket actualizado correctamente');
     }
 }

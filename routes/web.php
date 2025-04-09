@@ -10,10 +10,6 @@ use App\Http\Controllers\{
     HistorialTicketController,
     HomeController
 };
-use App\Http\Controllers\CategoriaController;
-use App\Http\Controllers\MaterialController;
-use App\Http\Controllers\EstanteController;
-use App\Http\Controllers\AutorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -114,18 +110,6 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::resource('tipotickets', TipoTicketController::class);
-        Route::get('cambioestadotipoticket', [TipoTicketController::class, 'cambioestadotipoticket'])->name('cambioestadotipoticket');
-        Route::resource('tipotickets', TipoTicketController::class);
-        Route::patch('tipotickets/{id}/status', [TipoTicketController::class, 'updateStatus']);
-    /*
-    |--------------------------------------------------------------------------
-    | Resource Routes (Commented - Ready for Implementation)
-    |--------------------------------------------------------------------------
-    */
-    // Route::resource('categorias', CategoriaController::class);
-    // Route::resource('materiales', MaterialController::class);
-    // Route::resource('estantes', EstanteController::class);
-    // Route::resource('autores', AutorController::class);
-    //Route::resource ('tickets', TipoTicketController::class);
-    //Route::get('cambioestadotipoticket', [TipoTicketController::class, 'cambioestadotipoticket'])->name('cambioestadotipoticket');
+    Route::patch('tipotickets/{id}/status', [TipoTicketController::class, 'updateStatus'])
+        ->name('tipotickets.update-status');
 });
