@@ -11,10 +11,11 @@
     <ul class="navbar-nav ml-auto">
         <!-- Navbar Search -->
 
-
         <!-- Messages Dropdown Menu -->
         <li class="nav-item dropdown">
-
+            <a class="nav-link" data-toggle="dropdown" href="#">
+                <i class="far fa-comments"></i>
+            </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 <a href="#" class="dropdown-item">
                     <!-- Message Start -->
@@ -71,23 +72,22 @@
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
                 <i class="far fa-bell"></i>
-                <span class="badge badge-warning navbar-badge">15</span>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <span class="dropdown-item dropdown-header">15 Notifications</span>
+                <span class="dropdown-item dropdown-header">Notifications</span>
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item">
-                    <i class="fas fa-envelope mr-2"></i> 4 new messages
+                    <i class="fas fa-envelope mr-2"></i> New messages
                     <span class="float-right text-muted text-sm">3 mins</span>
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item">
-                    <i class="fas fa-users mr-2"></i> 8 friend requests
+                    <i class="fas fa-users mr-2"></i> Friend requests
                     <span class="float-right text-muted text-sm">12 hours</span>
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item">
-                    <i class="fas fa-file mr-2"></i> 3 new reports
+                    <i class="fas fa-file mr-2"></i> New reports
                     <span class="float-right text-muted text-sm">2 days</span>
                 </a>
                 <div class="dropdown-divider"></div>
@@ -100,15 +100,15 @@
             </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('logout') }}"
-              onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-              <i class="fas fa-power-off fa-lg"></i>
-          </a>
-      
-          <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-              @csrf
-          </form>
-      </li>           
+            <a class="nav-link" href="{{ route('logout') }}"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="fas fa-power-off fa-lg"></i>
+            </a>
+        
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
+        </li>           
     </ul>
 </nav>
-<!-- /.navbar -->
+<!-- /.navbar -->

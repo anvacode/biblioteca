@@ -65,4 +65,10 @@ class TipoTicketController extends Controller
     {
         //
     }
+
+    public function cambioestadotipoticket(Request $request){
+        $tipoticket = TipoTicket::find($request->id);
+        $tipoticket->estado = $request->estado;
+        $tipoticket->save();
+    }
 }

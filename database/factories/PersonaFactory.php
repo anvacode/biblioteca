@@ -12,10 +12,14 @@ class PersonaFactory extends Factory
     public function definition()
     {
         return [
-            'nombre_persona' => $this->faker->name,
-            'n_documento' => $this->faker->unique()->randomNumber(8),
-            'telefono' => $this->faker->phoneNumber,
-            'correo' => $this->faker->unique()->safeEmail,
+            'nombre' => $this->faker->name(),
+            'n_documento' => $this->faker->unique()->numerify('########'),
+            'correo' => $this->faker->unique()->safeEmail(),
+            'telefono' => $this->faker->phoneNumber(),
+            'total_multas' => $this->faker->randomFloat(2, 0, 1000),
+            'tipo_documento_id' => \App\Models\TipoDocumento::factory(),
+            'mantenimiento_id' => null, 
+            'inventario_id' => null, 
         ];
     }
 }
