@@ -6,29 +6,31 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('personas_id');
-            $table->unsignedBigInteger('estados_tickets');
-            $table->unsignedBigInteger('tipo_tickets');
+            
+            // Columnas básicas
+            $table->string('titulo');
+            $table->text('descripcion');
+            $table->integer('prioridad')->default(3); // 1-5
+            
+            // Relaciones (usa nombres consistentes)
+            $table->unsignedBigInteger('estados_tickets'); // Nombre original
+            $table->unsignedBigInteger('tipo_tickets'); // Nombre original
+            $table->foreignId('user_id')->constrained();
+            
             $table->timestamps();
-
-            // Claves foráneas
-            $table->foreign('personas_id')->references('id')->on('personas');
-            $table->foreign('estados_tickets')->references('id')->on('estados_tickets');
-            $table->foreign('tipo_tickets')->references('id')->on('tipo_tickets');
+            $table->softDeletes();
+            
+            // Índices
+            $table->index('estados_tickets');
+            $table->index('tipo_tickets');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('tickets');
     }

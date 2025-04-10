@@ -16,7 +16,5 @@ class TiposTicketsSeeder extends Seeder
         
         // Crear tipos aleatorios adicionales
         TipoTicket::factory()->count(7)->create();
-
-        $this->command->info('✅ Tipos de tickets creados exitosamente!');
     }
 }

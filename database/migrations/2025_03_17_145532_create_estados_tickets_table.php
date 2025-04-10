@@ -6,21 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('estados_tickets', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre_estado');
+            $table->string('nombre_estado')->unique();
+            $table->string('color')->default('#6c757d'); 
+            $table->integer('orden')->default(0);
+            $table->boolean('activo')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('estados_tickets');

@@ -9,29 +9,24 @@ class Ticket extends Model
 {
     use HasFactory;
 
-    protected $table = 'tickets';
-
     protected $fillable = [
-        'personas_id',
-        'estados_tickets',
-        'tipo_tickets',
+        'personas_id', // Mantenemos este si no quieres cambiarlo
+        'estado_ticket_id', // Cambiado
+        'tipo_ticket_id' // Cambiado
     ];
 
-    // Relación con la tabla `personas`
     public function persona()
     {
         return $this->belongsTo(Persona::class, 'personas_id');
     }
 
-    // Relación con la tabla `estados_tickets`
-    public function estadoTicket()
+    public function estado()
     {
-        return $this->belongsTo(EstadoTicket::class, 'estados_tickets');
+        return $this->belongsTo(EstadoTicket::class, 'estado_ticket_id');
     }
 
-    // Relación con la tabla `tipo_tickets`
-    public function tipoTicket()
+    public function tipo()
     {
-        return $this->belongsTo(TipoTicket::class, 'tipo_tickets');
+        return $this->belongsTo(TipoTicket::class, 'tipo_ticket_id');
     }
 }

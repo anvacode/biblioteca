@@ -5,30 +5,28 @@ namespace App\Http\Controllers;
 use App\Models\EstadoTicket;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class EstadoTicketController extends Controller
 {
-    // Estados del sistema que no pueden eliminarse
-    private $protectedStates = ['Abierto', 'En progreso', 'Cerrado'];
-
-    /**
-     * Display a listing of ticket states.
-     */
     public function index()
     {
-        $estados = EstadoTicket::withCount('tickets')
-            ->orderBy('nombre_estado')
-            ->get();
+        $estados = EstadoTicket::select('estados_tickets.*')
+        ->selectSub(function($query) {
+            $query->from('tickets')
+                ->whereColumn('tickets.estado_ticket_id', 'estados_tickets.id')
+                ->select(DB::raw('count(*)'));
+        }, 'tickets_count')
+        ->orderBy('orden')
+        ->orderBy('nombre_estado')
+        ->get();
 
-        return view('estados-tickets.index', [
+        return view('estadostickets.index', [
             'estados' => $estados,
-            'protectedStates' => $this->protectedStates
+            'protectedStates' => EstadoTicket::getProtectedStates()
         ]);
     }
 
-    /**
-     * Store a newly created ticket state.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -37,8 +35,10 @@ class EstadoTicketController extends Controller
                 'string',
                 'max:50',
                 'unique:estados_tickets,nombre_estado',
-                'not_in:' . implode(',', $this->protectedStates)
-            ]
+                'not_in:' . implode(',', EstadoTicket::getProtectedStates())
+            ],
+            'color' => 'required|string|size:7',
+            'orden' => 'required|integer|min:0'
         ], [
             'nombre_estado.not_in' => 'Este nombre de estado está reservado para el sistema.'
         ]);
@@ -49,13 +49,9 @@ class EstadoTicketController extends Controller
             ->with('success', 'Estado creado exitosamente!');
     }
 
-    /**
-     * Update the specified ticket state.
-     */
-    public function update(Request $request, EstadoTicket $estadoTicket)
+    public function update(Request $request, EstadoTicket $estados_ticket)
     {
-        // Verificar si es un estado protegido
-        if (in_array($estadoTicket->nombre_estado, $this->protectedStates)) {
+        if ($estados_ticket->isProtected()) {
             return back()->with('error', 'No puedes editar este estado del sistema.');
         }
 
@@ -64,42 +60,41 @@ class EstadoTicketController extends Controller
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('estados_tickets')->ignore($estadoTicket->id),
-                'not_in:' . implode(',', $this->protectedStates)
-            ]
+                Rule::unique('estados_tickets')->ignore($estados_ticket->id),
+                'not_in:' . implode(',', EstadoTicket::getProtectedStates())
+            ],
+            'color' => 'required|string|size:7',
+            'orden' => 'required|integer|min:0',
+            'activo' => 'sometimes|boolean'
         ]);
 
-        $estadoTicket->update($validated);
+        $estados_ticket->update($validated);
 
         return back()->with('success', 'Estado actualizado!');
     }
 
-    /**
-     * Remove the specified ticket state.
-     */
-    public function destroy(EstadoTicket $estadoTicket)
+    public function destroy(EstadoTicket $estados_ticket)
     {
-        // Verificar si es un estado protegido
-        if (in_array($estadoTicket->nombre_estado, $this->protectedStates)) {
+        if ($estados_ticket->isProtected()) {
             return back()->with('error', 'No puedes eliminar este estado del sistema.');
         }
 
-        // Verificar si tiene tickets asociados
-        if ($estadoTicket->tickets()->exists()) {
+        if ($estados_ticket->tickets()->exists()) {
             return back()->with('error', 'No puedes eliminar un estado con tickets asociados.');
         }
 
-        $estadoTicket->delete();
+        $estados_ticket->delete();
 
         return redirect()->route('estados-tickets.index')
-            ->with('success', 'Estado eliminado!');
+            ->with('success', 'Estado eliminado permanentemente!');
     }
 
-    /**
-     * API: Get all ticket states (for dropdowns)
-     */
     public function apiEstados()
     {
-        return response()->json(EstadoTicket::all());
+        return response()->json(
+            EstadoTicket::where('activo', true)
+                ->orderBy('orden')
+                ->get()
+        );
     }
 }

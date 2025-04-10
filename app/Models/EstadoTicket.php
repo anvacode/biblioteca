@@ -8,16 +8,32 @@ use Illuminate\Database\Eloquent\Model;
 class EstadoTicket extends Model
 {
     use HasFactory;
+
     protected $table = 'estados_tickets';
 
-    // Campos que se pueden asignar masivamente
     protected $fillable = [
         'nombre_estado',
+        'color',
+        'orden',
+        'activo'
     ];
 
-    // Relación con la tabla `tickets`
+    protected $casts = [
+        'activo' => 'boolean'
+    ];
+
     public function tickets()
     {
         return $this->hasMany(Ticket::class, 'estado_ticket_id');
+    }
+
+    public static function getProtectedStates()
+    {
+        return ['Abierto', 'En progreso', 'Cerrado'];
+    }
+
+    public function isProtected()
+    {
+        return in_array($this->nombre_estado, self::getProtectedStates());
     }
 }

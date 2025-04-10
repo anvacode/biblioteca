@@ -17,14 +17,19 @@ class DatabaseSeeder extends Seeder
 
         // 2. Luego los tipos de ticket (dependencia lógica)
         $this->call(TiposTicketsSeeder::class);
-        
+
+        $this->call([EstadosTicketsSeeder::class,]);
+
         // 3. (Opcional) Usuario de prueba específico
         User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@biblioteca.com',
             'password' => bcrypt('password123'),
         ]);
-
-        $this->command->info('✔️  Base de datos sembrada exitosamente!');
+        
+        $this->command->info('✔️  The database has been seeded successfully!');
+        $this->command->info('✔️  Die Datenbank wurde erfolgreich befüllt!');
+        $this->command->info('✔️  База данных успешно засеяна!');
+        $this->command->info('✔️  データベースが正常にシードされた！');
     }
 }

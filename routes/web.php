@@ -59,9 +59,9 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::prefix('estados-tickets')->group(function () {
         Route::resource('/', EstadoTicketController::class)
-            ->except(['create', 'show', 'edit'])
-            ->names('estados-tickets');
-            
+            ->names('estados-tickets')
+            ->parameters(['' => 'estados_ticket']);
+                
         Route::get('/api/list', [EstadoTicketController::class, 'apiEstados'])
             ->name('api.estados-tickets');
     });

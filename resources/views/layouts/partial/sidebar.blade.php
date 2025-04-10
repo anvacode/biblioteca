@@ -3,10 +3,10 @@
     <div class="brand-container">
         <a href="{{ route('home') }}" class="brand-link" style="text-decoration: none;">
             <div class="brand-image-container">
-                <i class="fas fa-user-circle" style="font-size: 2.5rem; color: white;"></i>
+                <i class="fas fa-user-circle"></i>
             </div>
             <div class="brand-text-container">
-                <span class="brand-text font-weight-light" style="color: white;">
+                <span class="brand-text font-weight-light">
                     {{ auth()->user()->name }}
                 </span>
                 <small class="brand-subtext">{{ auth()->user()->email }}</small>
@@ -16,20 +16,6 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <!-- SidebarSearch Form -->
-        <div class="sidebar-search-container">
-            <div class="form-inline">
-                <div class="input-group" data-widget="sidebar-search">
-                    <input class="form-control form-control-sidebar" type="search" placeholder="Buscar..." aria-label="Buscar">
-                    <div class="input-group-append">
-                        <button class="btn btn-sidebar" type="button" aria-label="Buscar">
-                            <i class="fas fa-search fa-fw"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -41,29 +27,20 @@
                     </a>
                 </li>
 
-                <!-- Tickets Section -->
-                <li class="nav-item {{ request()->routeIs('historial-tickets.*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->routeIs('historial-tickets.*') ? 'active' : '' }}">
+                <!-- Tickets -->
+                <li class="nav-item">
+                    <a href="{{ route('tickets.index') }}" class="nav-link {{ request()->routeIs('tickets.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-ticket-alt"></i>
-                        <p>
-                            Tickets
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
+                        <p>Tickets</p>
                     </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('historial-tickets.index') }}" class="nav-link {{ request()->routeIs('historial-tickets.index') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Historial</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('historial-tickets.export', ['ticket' => 1]) }}" class="nav-link">
-                                <i class="far fa-file-pdf nav-icon"></i>
-                                <p>Exportar PDF</p>
-                            </a>
-                        </li>
-                    </ul>
+                </li>
+
+                <!-- Ticket History -->
+                <li class="nav-item">
+                    <a href="{{ route('historial-tickets.index') }}" class="nav-link {{ request()->routeIs('historial-tickets.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-history"></i>
+                        <p>Historial Tickets</p>
+                    </a>
                 </li>
 
                 <!-- Reservations -->
@@ -77,30 +54,24 @@
                 <!-- Divider -->
                 <li class="nav-header mt-2">CONFIGURACIÓN</li>
 
-                <!-- Configuration Items -->
-                <li class="nav-item">
-                    <a href="{{ route('tipotickets.index') }}" class="nav-link {{ request()->routeIs('tipotickets.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-cog"></i>
-                        <p>Tipos de Ticket</p>
-                    </a>
-                </li>
+                <!-- Ticket Status -->
                 <li class="nav-item">
                     <a href="{{ route('estados-tickets.index') }}" class="nav-link {{ request()->routeIs('estados-tickets.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-list-alt"></i>
-                        <p>Estados</p>
+                        <p>Estados Tickets</p>
+                    </a>
+                </li>
+
+                <!-- Ticket Types -->
+                <li class="nav-item">
+                    <a href="{{ route('tipotickets.index') }}" class="nav-link {{ request()->routeIs('tipotickets.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-tags"></i>
+                        <p>Tipos de Ticket</p>
                     </a>
                 </li>
 
                 <!-- Divider -->
                 <li class="nav-header mt-2">USUARIO</li>
-
-                <!-- User Profile -->
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-user-cog"></i>
-                        <p>Mi Perfil</p>
-                    </a>
-                </li>
 
                 <!-- Logout -->
                 <li class="nav-item">
@@ -135,9 +106,6 @@
         display: block;
         font-size: 0.8rem;
         color: rgba(255, 255, 255, 0.8);
-    }
-    .sidebar-search-container {
-        padding: 10px;
     }
     .nav-header {
         font-size: 0.9rem;
