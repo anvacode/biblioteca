@@ -39,7 +39,7 @@ class EstadosTicketsSeeder extends Seeder
                 'nombre_estado' => 'Cancelado',
                 'color' => '#e3342f', // Rojo
                 'orden' => 5,
-                'activo' => false // Ejemplo de estado inactivo
+                'activo' => false 
             ]
         ];
 
@@ -50,10 +50,10 @@ class EstadosTicketsSeeder extends Seeder
             );
         }
 
-        // 2. Estados aleatorios (opcional, para testing)
+        // 2. Estados aleatorios 
         if (app()->environment('local')) {
             EstadoTicket::factory()
-                ->count(3) // Crea 3 estados adicionales aleatorios
+                ->count(3) 
                 ->create();
         }
     }

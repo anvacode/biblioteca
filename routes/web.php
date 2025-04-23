@@ -64,6 +64,9 @@ Route::middleware(['auth'])->group(function () {
                 
         Route::get('/api/list', [EstadoTicketController::class, 'apiEstados'])
             ->name('api.estados-tickets');
+
+        Route::patch('/estados-tickets/{estados_ticket}/status', [EstadoTicketController::class, 'updateStatus'])
+            ->name('estados-tickets.updateStatus');
     });
     
     /*

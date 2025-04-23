@@ -15,6 +15,6 @@ class TiposTicketsSeeder extends Seeder
         TipoTicket::factory()->prestamoMaterial()->create();
         
         // Crear tipos aleatorios adicionales
-        TipoTicket::factory()->count(7)->create();
+        TipoTicket::factory()->count(30)->create();
     }
 }
