@@ -11,12 +11,7 @@ class EstadoTicket extends Model
 
     protected $table = 'estados_tickets';
 
-    protected $fillable = [
-        'nombre_estado',
-        'color',
-        'orden',
-        'activo'
-    ];
+    protected $fillable = ['nombre_estado', 'color', 'orden', 'activo'];
 
     protected $casts = [
         'activo' => 'boolean'

@@ -6,10 +6,9 @@
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h3 class="mb-0">Estados de Tickets</h3>
                 <div class="ml-auto">
-                    <button class="btn btn-light text-primary font-weight-bold" data-toggle="modal"
-                        data-target="#createEstadoModal">
+                    <a href="{{ route('estados-tickets.create') }}" class="btn btn-light text-primary font-weight-bold">
                         <i class="fas fa-plus"></i> Nuevo Estado
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="card-body">
@@ -50,13 +49,10 @@
                                     <td class="align-middle text-center">{{ $estado->tickets_count }}</td>
                                     <td class="align-middle text-center">
                                         <div class="d-inline-flex">
-                                            <button class="btn btn-sm btn-warning mx-1 edit-btn"
-                                                data-id="{{ $estado->id }}" data-nombre="{{ $estado->nombre_estado }}"
-                                                data-color="{{ $estado->color }}" data-orden="{{ $estado->orden }}"
-                                                data-activo="{{ $estado->activo }}" title="Editar"
-                                                @if ($estado->isProtected()) disabled @endif>
+                                            <a href="{{ route('estados-tickets.edit', $estado->id) }}"
+                                                class="btn btn-sm btn-warning mx-1" title="Editar">
                                                 <i class="fas fa-edit"></i>
-                                            </button>
+                                            </a>
 
                                             @if (!$estado->isProtected() && $estado->tickets_count == 0)
                                                 <button type="button" class="btn btn-sm btn-danger mx-1 delete-btn"
@@ -71,88 +67,6 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Crear Estado -->
-    <div class="modal fade" id="createEstadoModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">Crear Nuevo Estado</h5>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="{{ route('estados-tickets.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="nombre_estado">Nombre del Estado</label>
-                            <input type="text" class="form-control" id="nombre_estado" name="nombre_estado" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="color">Color</label>
-                            <input type="color" class="form-control" id="color" name="color" value="#6c757d"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="orden">Orden</label>
-                            <input type="number" class="form-control" id="orden" name="orden" min="0"
-                                value="0" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Editar Estado -->
-    <div class="modal fade" id="editEstadoModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-warning text-white">
-                    <h5 class="modal-title">Editar Estado</h5>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form id="editForm" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="edit_nombre_estado">Nombre del Estado</label>
-                            <input type="text" class="form-control" id="edit_nombre_estado" name="nombre_estado"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_color">Color</label>
-                            <input type="color" class="form-control" id="edit_color" name="color" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_orden">Orden</label>
-                            <input type="number" class="form-control" id="edit_orden" name="orden" min="0"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="edit_activo" name="activo"
-                                    value="1">
-                                <label class="custom-control-label" for="edit_activo">Activo</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-warning">Actualizar</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
@@ -248,157 +162,108 @@
                 const url = `/estados-tickets/${estadoId}/status`;
                 const newEstado = button.data('estado') ? 0 : 1;
 
-                button.addClass('animate__animated animate__pulse');
-                button.prop('disabled', true);
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: `¿Deseas cambiar el estado a ${newEstado ? 'Activo' : 'Inactivo'}?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, cambiar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        button.addClass('animate__animated animate__pulse');
+                        button.prop('disabled', true);
 
-                $.ajax({
-                    url: url,
-                    type: 'POST', // Usamos POST pero con _method PATCH
-                    data: {
-                        _method: 'PATCH',
-                        estado: newEstado,
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            button.data('estado', newEstado ? 1 : 0)
-                                .removeClass('btn-success btn-danger')
-                                .addClass(newEstado ? 'btn-success' : 'btn-danger')
-                                .html(
-                                    `<i class="fas ${newEstado ? 'fa-check' : 'fa-times'} mr-1"></i> ${newEstado ? 'Activo' : 'Inactivo'}`
-                                    );
-                        }
-                        button.prop('disabled', false);
-                    },
-                    error: function(xhr) {
-                        console.error('Error:', xhr.responseJSON);
-                        button.prop('disabled', false);
-                        Swal.fire('Error', xhr.responseJSON?.message || 'Error al actualizar',
-                            'error');
-                    },
-                    complete: function() {
-                        button.removeClass('animate__animated animate__pulse');
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: {
+                                _method: 'PATCH',
+                                estado: newEstado,
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    button.data('estado', newEstado ? 1 : 0)
+                                        .removeClass('btn-success btn-danger')
+                                        .addClass(newEstado ? 'btn-success' : 'btn-danger')
+                                        .html(
+                                            `<i class="fas ${newEstado ? 'fa-check' : 'fa-times'} mr-1"></i> ${newEstado ? 'Activo' : 'Inactivo'}`
+                                        );
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: '¡Estado actualizado!',
+                                        text: response.message,
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    });
+                                }
+                                button.prop('disabled', false);
+                            },
+                            error: function(xhr) {
+                                console.error('Error:', xhr.responseJSON);
+                                button.prop('disabled', false);
+                                Swal.fire('Error', xhr.responseJSON?.message || 'Error al actualizar el estado', 'error');
+                            },
+                            complete: function() {
+                                button.removeClass('animate__animated animate__pulse');
+                            }
+                        });
                     }
                 });
             });
-            e.preventDefault();
-            const button = $(this);
-            const estadoId = button.data('id');
-            const url = "{{ route('estados-tickets.updateStatus', ':id') }}".replace(':id', estadoId);
-            const newEstado = button.data('estado') ? 0 : 1;
 
-            console.log('Enviando solicitud:', {
-                url,
-                newEstado
-            }); // Debug en consola
+            $(document).on('click', '.delete-btn', function() {
+                const button = $(this);
+                const estadoId = button.data('id');
+                const url = "{{ route('estados-tickets.destroy', ':id') }}".replace(':id', estadoId);
 
-            button.addClass('animate__animated animate__pulse');
-            button.prop('disabled', true);
-
-            $.ajax({
-                url: url,
-                method: 'PATCH',
-                data: {
-                    estado: newEstado,
-                    _token: "{{ csrf_token() }}"
-                },
-                success: function(response) {
-                    console.log('Respuesta recibida:', response); // Debug en consola
-                    if (response.success) {
-                        button.removeClass('btn-success btn-danger')
-                            .addClass(response.nuevo_estado ? 'btn-success' : 'btn-danger')
-                            .data('estado', response.nuevo_estado ? 1 : 0)
-                            .html(
-                                `<i class="fas ${response.nuevo_estado ? 'fa-check' : 'fa-times'} mr-1"></i> ${response.nuevo_estado ? 'Activo' : 'Inactivo'}`
-                            );
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: response.message,
-                            timer: 1500,
-                            showConfirmButton: false
+                Swal.fire({
+                    title: '¿Confirmar eliminación?',
+                    text: "¡Esta acción no se puede deshacer!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            method: 'POST',
+                            data: {
+                                _method: 'DELETE',
+                                _token: "{{ csrf_token() }}"
+                            },
+                            beforeSend: () => {
+                                button.prop('disabled', true);
+                                Swal.showLoading();
+                            },
+                            success: (response) => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '¡Eliminado!',
+                                    text: response.success,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            },
+                            error: (xhr) => {
+                                const errorMsg = xhr.responseJSON?.error ||
+                                    'Error al eliminar el estado';
+                                Swal.fire('Error', errorMsg, 'error');
+                                button.prop('disabled', false);
+                            }
                         });
                     }
-                },
-                error: function(xhr) {
-                    console.error('Error en la solicitud:', xhr
-                        .responseJSON); // Debug en consola
-                    Swal.fire(
-                        'Error',
-                        xhr.responseJSON?.message || 'Error al actualizar el estado',
-                        'error'
-                    );
-                },
-                complete: function() {
-                    button.removeClass('animate__animated animate__pulse');
-                    button.prop('disabled', false);
-                }
+                });
             });
-        });
-
-        $(document).on('click', '.delete-btn', function() {
-            const button = $(this);
-            const estadoId = button.data('id');
-            const url = "{{ route('estados-tickets.destroy', ':id') }}".replace(':id', estadoId);
-
-            Swal.fire({
-                title: '¿Confirmar eliminación?',
-                text: "¡Esta acción no se puede deshacer!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: url,
-                        method: 'POST',
-                        data: {
-                            _method: 'DELETE',
-                            _token: "{{ csrf_token() }}"
-                        },
-                        beforeSend: () => {
-                            button.prop('disabled', true);
-                            Swal.showLoading();
-                        },
-                        success: (response) => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Eliminado!',
-                                text: response.success,
-                                timer: 1500,
-                                showConfirmButton: false
-                            }).then(() => {
-                                location.reload();
-                            });
-                        },
-                        error: (xhr) => {
-                            const errorMsg = xhr.responseJSON?.error ||
-                                'Error al eliminar el estado';
-                            Swal.fire('Error', errorMsg, 'error');
-                            button.prop('disabled', false);
-                        }
-                    });
-                }
-            });
-        });
-
-        $('.edit-btn:not(:disabled)').click(function() {
-        const button = $(this);
-        const estadoId = button.data('id');
-
-        $('#edit_nombre_estado').val(button.data('nombre')).prop('readonly', button.data(
-            'protected') === 'true');
-        $('#edit_color').val(button.data('color'));
-        $('#edit_orden').val(button.data('orden'));
-        $('#edit_activo').prop('checked', button.data('activo'));
-
-        $('#editForm').attr('action', `/estados-tickets/${estadoId}`);
-        $('#editEstadoModal').modal('show');
-        });
         });
     </script>
 @endpush

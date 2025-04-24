@@ -23,86 +23,69 @@ class EstadoTicketController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return view('estadostickets.create');
+    }
+
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nombre_estado' => [
-                'required',
-                'string',
-                'max:50',
-                'unique:estados_tickets,nombre_estado',
-                'not_in:' . implode(',', EstadoTicket::getProtectedStates())
-            ],
-            'color' => 'required|string|size:7|starts_with:#',
-            'orden' => 'required|integer|min:0'
-        ], [
-            'nombre_estado.not_in' => 'Este nombre de estado está reservado para el sistema.',
-            'color.starts_with' => 'El color debe ser un código hexadecimal válido (ej. #FF0000).'
-        ]);
-
-        EstadoTicket::create($validated);
-
-        return redirect()->route('estados-tickets.index')
-            ->with('success', 'Estado creado exitosamente!');
-    }
-
-    public function update(Request $request, EstadoTicket $estados_ticket)
-    {
-        if ($estados_ticket->isProtected()) {
-            return back()->with('error', 'No puedes editar este estado del sistema.');
-        }
-
-        $validated = $request->validate([
-            'nombre_estado' => [
-                'required',
-                'string',
-                'max:50',
-                Rule::unique('estados_tickets')->ignore($estados_ticket->id),
-                'not_in:' . implode(',', EstadoTicket::getProtectedStates())
-            ],
-            'color' => 'required|string|size:7|starts_with:#',
+        $request->validate([
+            'nombre_estado' => 'required|string|max:255',
+            'color' => 'required|string|max:7', // Validación para el color hexadecimal
             'orden' => 'required|integer|min:0',
-            'activo' => 'sometimes|boolean'
         ]);
 
-        $estados_ticket->update($validated);
+        EstadoTicket::create($request->all());
 
-        return back()->with('success', 'Estado actualizado!');
+        return redirect()->route('estados-tickets.index')->with('success', 'Estado creado correctamente.');
     }
 
-    public function destroy(EstadoTicket $estados_ticket)
+    public function edit($id)
     {
-        if ($estados_ticket->isProtected()) {
-            return back()->with('error', 'No puedes eliminar este estado del sistema.');
-        }
-
-        if ($estados_ticket->tickets()->exists()) {
-            return back()->with('error', 'No puedes eliminar un estado con tickets asociados.');
-        }
-
-        $estados_ticket->delete();
-
-        return redirect()->route('estados-tickets.index')
-            ->with('success', 'Estado eliminado permanentemente!');
+        $estado = EstadoTicket::findOrFail($id);
+        return view('estadostickets.edit', compact('estado'));
     }
 
-    public function updateStatus(Request $request, EstadoTicket $estado)
+    public function update(Request $request, $id)
     {
-        if ($estado->isProtected()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No se puede modificar este estado del sistema'
-            ], 403);
-        }
-
-        $estado->update([
-            'activo' => $request->validate(['estado' => 'required|boolean'])['estado']
+        $request->validate([
+            'nombre_estado' => 'required|string|max:255',
+            'color' => 'required|string|max:7',
+            'orden' => 'required|integer|min:0',
         ]);
+
+        $estado = EstadoTicket::findOrFail($id);
+        $estado->update($request->all());
+
+        return redirect()->route('estados-tickets.index')->with('success', 'Estado actualizado correctamente.');
+    }
+
+    public function destroy($id)
+    {
+        $estado = EstadoTicket::findOrFail($id);
+
+        // Verificar si el estado tiene tickets asociados
+        if ($estado->tickets_count > 0) {
+            return response()->json(['error' => 'No se puede eliminar un estado con tickets asociados.'], 400);
+        }
+
+        $estado->delete();
+
+        return response()->json(['success' => 'Estado eliminado correctamente.']);
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $estado = EstadoTicket::findOrFail($id);
+
+        // Actualizar el estado
+        $estado->activo = $request->estado;
+        $estado->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Estado actualizado correctamente',
-            'nuevo_estado' => $estado->activo
+            'message' => 'El estado ha sido actualizado correctamente.'
         ]);
     }
 
