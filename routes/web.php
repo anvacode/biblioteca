@@ -74,14 +74,8 @@ Route::middleware(['auth'])->group(function () {
     | Reservation Routes
     |--------------------------------------------------------------------------
     */
-    Route::prefix('reservas')->group(function () {
-        Route::resource('/', ReservaController::class)
-            ->except(['edit', 'update'])
-            ->names('reservas');
-            
-        Route::patch('/{reserva}/status', [ReservaController::class, 'updateStatus'])
-            ->name('reservas.update-status');
-    });
+    Route::resource('reservas', ReservaController::class)
+        ->names('reservas');
     
     /*
     |--------------------------------------------------------------------------

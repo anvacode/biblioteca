@@ -2,21 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactories;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Estado extends Model
 {
-    protected $table = 'Estado';
-    protected $primaryKey = 'id';
-    
-    protected $fillable = [ 
-        'nombre',
-        'mantenimiento_id',
-    ];
+    use HasFactory;
 
-    public function mantenimiento(){
-        return $this->hasMany(Mantenimiento::class,'mantenimiento_id');
-    }
-
+    protected $table = 'estados'; // Nombre de la tabla
+    protected $fillable = ['nombre']; // Campos que se pueden llenar
 }

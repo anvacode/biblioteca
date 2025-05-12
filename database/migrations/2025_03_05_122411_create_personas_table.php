@@ -14,15 +14,14 @@ return new class extends Migration
         Schema::create('personas', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('N_documento');
-            $table->string('correo');
-            $table->string('telefono');
-            $table->unsignedBigInteger('tipoDocumento_id');
-
+            $table->string('n_documento')->unique();
+            $table->string('correo')->unique();
+            $table->string('telefono')->nullable();
+            $table->unsignedBigInteger('tipoDocumento_id')->nullable(); // Relación con TipoDocumento
             $table->timestamps();
 
-            $table->foreign('tipoDocumento_id')
-            ->references('id')->on('tipo_documento');
+            // Llave foránea
+            $table->foreign('tipoDocumento_id')->references('id')->on('tipo_documento')->onDelete('cascade');
         });
     }
 

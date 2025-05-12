@@ -28,8 +28,8 @@ class ReservaController extends Controller
     public function create()
     {
         $personas = Persona::orderBy('nombre')->get();
-        $materiales = Material::where('disponible', true)->get();
-        
+        $materiales = Material::where('estado', 'disponible')->get(); // Filtrar materiales disponibles
+
         return view('reservas.create', compact('personas', 'materiales'));
     }
 
@@ -44,9 +44,9 @@ class ReservaController extends Controller
             'materiales_id' => [
                 'required',
                 'exists:materiales,id',
-                function ($attribute, $value, $fail) use ($request) {
+                function ($attribute, $value, $fail) {
                     $material = Material::find($value);
-                    if (!$material->disponible) {
+                    if ($material->estado !== 'disponible') {
                         $fail('El material seleccionado no está disponible.');
                     }
                 }
@@ -62,9 +62,9 @@ class ReservaController extends Controller
             'materiales_id' => $validated['materiales_id']
         ]);
 
-        // Actualizar disponibilidad del material
+        // Actualizar estado del material
         Material::where('id', $validated['materiales_id'])
-                ->update(['disponible' => false]);
+                ->update(['estado' => 'reservado']);
 
         return redirect()->route('reservas.index')
                ->with('success', 'Reserva creada exitosamente!');
@@ -76,6 +76,35 @@ class ReservaController extends Controller
     public function show(Reserva $reserva)
     {
         return view('reservas.show', compact('reserva'));
+    }
+
+    /**
+     * Show the form for editing the specified reservation.
+     */
+    public function edit(Reserva $reserva)
+    {
+        $personas = Persona::orderBy('nombre')->get();
+        $materiales = Material::all();
+
+        return view('reservas.edit', compact('reserva', 'personas', 'materiales'));
+    }
+
+    /**
+     * Update the specified reservation in storage.
+     */
+    public function update(Request $request, Reserva $reserva)
+    {
+        $validated = $request->validate([
+            'fecha_reserva' => 'required|date|after_or_equal:today',
+            'estado' => 'required|in:pendiente,confirmada,cancelada',
+            'personas_id' => 'required|exists:personas,id',
+            'materiales_id' => 'required|exists:materiales,id',
+        ]);
+
+        $reserva->update($validated);
+
+        return redirect()->route('reservas.index')
+               ->with('success', 'Reserva actualizada exitosamente!');
     }
 
     /**
@@ -91,23 +120,20 @@ class ReservaController extends Controller
 
         // Si se cancela o completa, liberar el material
         if (in_array($request->estado, ['cancelada', 'completada'])) {
-            $reserva->material()->update(['disponible' => true]);
+            $reserva->material()->update(['estado' => 'disponible']);
         }
 
         return back()->with('success', 'Estado actualizado!');
     }
 
     /**
-     * Remove the specified reservation.
+     * Remove the specified reservation from storage.
      */
     public function destroy(Reserva $reserva)
     {
-        // Liberar el material antes de eliminar
-        $reserva->material()->update(['disponible' => true]);
-        
         $reserva->delete();
-        
+
         return redirect()->route('reservas.index')
-               ->with('success', 'Reserva eliminada!');
+            ->with('success', 'Reserva eliminada exitosamente.');
     }
 }

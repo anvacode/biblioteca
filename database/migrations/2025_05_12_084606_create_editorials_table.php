@@ -9,14 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('clasificaciones', function (Blueprint $table) {
+        Schema::create('editoriales', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->text('descripcion')->nullable();
-            $table->string('estado')->default('activo'); // Valor predeterminado para el campo estado
-            $table->string('registradoPor')->nullable(); // Permitir valores nulos
+            $table->string('direccion')->nullable();
+            $table->string('telefono')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clasificaciones');
+        Schema::dropIfExists('editorials');
     }
 };

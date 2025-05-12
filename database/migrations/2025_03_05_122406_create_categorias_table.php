@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('categorias', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('codigoClasificacion')->nullable();
             $table->text('descripcion')->nullable();
-            $table->string('estado');
-            $table->string('registradoPor');
+            $table->string('estado')->default('activo'); // Valor predeterminado para el campo estado
+            $table->string('registradoPor')->nullable(); // Permitir valores nulos
             $table->timestamps();
         });
     }

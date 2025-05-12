@@ -21,6 +21,11 @@ class Reserva extends Model
         'materiales_id', // ID del material asociado a la reserva
     ];
 
+    // Asegura que 'fecha_reserva' se maneje como un objeto Carbon
+    protected $casts = [
+        'fecha_reserva' => 'datetime',
+    ];
+
     /**
      * Relación con el modelo `Persona`.
      * Indica que una reserva pertenece a una persona.

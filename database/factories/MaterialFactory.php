@@ -2,26 +2,23 @@
 
 namespace Database\Factories;
 
-use App\Models\Material;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MaterialFactory extends Factory
 {
-    protected $model = Material::class;
+    protected $model = \App\Models\Material::class;
 
     public function definition()
     {
         return [
-            'titulo' => $this->faker->sentence,
-            'isbn' => $this->faker->isbn13,
-            'anyo' => $this->faker->year,
-            'estante' => $this->faker->word,
-            'estado' => $this->faker->randomElement(['disponible', 'prestado', 'reservado']),
-            'registradoPor' => $this->faker->name,
-            'fecha' => $this->faker->dateTime,
-            'personas_id_persona' => \App\Models\Persona::factory(),
-            'categorias_idcategorias' => \App\Models\Categoria::factory(),
-            'editoriales_ideditoriales' => \App\Models\Editorial::factory(),
+            'titulo' => $this->faker->sentence(),
+            'isbn' => $this->faker->isbn13(),
+            'anyo' => $this->faker->year(),
+            'estado' => 'disponible',
+            'registradoPor' => $this->faker->name(),
+            'clasificaciones_id' => \App\Models\Clasificacion::factory(), // Relación con clasificaciones
+            'categorias_id' => \App\Models\Categoria::factory(), // Relación con categorías
+            'estantes_id' => \App\Models\Estante::factory(), // Relación con estantes
         ];
     }
 }

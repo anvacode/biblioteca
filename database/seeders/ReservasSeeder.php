@@ -2,25 +2,35 @@
 
 namespace Database\Seeders;
 
-use App\Models\Reserva;
 use Illuminate\Database\Seeder;
+use App\Models\Reserva;
+use App\Models\Persona;
+use App\Models\Material;
+use App\Models\Estado;
+use Carbon\Carbon;
 
 class ReservasSeeder extends Seeder
 {
     public function run()
     {
-        // Crea 30 reservas con relaciones automáticas
-        Reserva::factory()
-            ->count(30)
-            ->create();
+        // Obtener personas, materiales y estados existentes
+        $personas = Persona::all();
+        $materiales = Material::all();
+        $estados = Estado::all(); // Usar el modelo Estado para obtener los registros
 
-        // Crea 5 reservas confirmadas con persona específica (opcional)
-        Reserva::factory()
-            ->count(5)
-            ->state([
-                'estado' => 'confirmada',
-                'personas_id' => \App\Models\Persona::first()->id,
-            ])
-            ->create();
+        // Verificar que las colecciones no estén vacías
+        if ($personas->isEmpty() || $materiales->isEmpty() || $estados->isEmpty()) {
+            throw new \Exception('Asegúrate de que las tablas `personas`, `materiales` y `estados` estén pobladas.');
+        }
+
+        // Crear reservas
+        foreach ($personas as $persona) {
+            Reserva::create([
+                'fecha_reserva' => Carbon::now()->addDays(rand(1, 30)),
+                'estado' => $estados->random()->nombre,
+                'personas_id' => $persona->id,
+                'materiales_id' => $materiales->random()->id, // Asegúrate de que se asigne un material válido
+            ]);
+        }
     }
 }
