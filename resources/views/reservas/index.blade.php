@@ -13,11 +13,6 @@
             </div>
         </div>
         <div class="card-body">
-            @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
             <div class="table-responsive">
                 <table class="table table-hover table-bordered datatable">
                     <thead class="thead-light">
@@ -35,7 +30,7 @@
                         <tr>
                             <td class="align-middle">{{ $loop->iteration }}</td>
                             <td class="align-middle">{{ $reserva->persona->nombre }}</td>
-                            <td class="align-middle">{{ $reserva->material->nombre }}</td>
+                            <td class="align-middle">{{ $reserva->material->titulo }}</td>
                             <td class="align-middle">{{ $reserva->fecha_reserva->format('d/m/Y') }}</td>
                             <td class="align-middle text-center">
                                 <span class="badge {{ $reserva->estado == 'pendiente' ? 'badge-warning' : ($reserva->estado == 'confirmada' ? 'badge-success' : 'badge-secondary') }}">
@@ -112,6 +107,18 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
+    // Mostrar mensaje de éxito con SweetAlert2
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: '{{ session('success') }}',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Aceptar'
+        });
+    @endif
+
+    // Configuración de DataTables
     $('.datatable').DataTable({
         responsive: true,
         autoWidth: false,
@@ -123,6 +130,7 @@ $(document).ready(function() {
         ]
     });
 
+    // Confirmación de eliminación con SweetAlert2
     $(document).on('click', '.btn-delete', function(e) {
         e.preventDefault();
         const form = $(this).closest('form');

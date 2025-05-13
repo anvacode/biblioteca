@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('editoriales', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre');
-            $table->string('direccion')->nullable();
-            $table->string('telefono')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('editoriales')) {
+            Schema::create('editoriales', function (Blueprint $table) {
+                $table->id();
+                $table->string('nombre');
+                $table->string('direccion')->nullable();
+                $table->string('telefono')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('editorials');
+        Schema::dropIfExists('editoriales'); // Corregido el nombre de la tabla
     }
 };

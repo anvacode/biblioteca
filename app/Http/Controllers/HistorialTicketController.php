@@ -24,32 +24,27 @@ class HistorialTicketController extends Controller
    */
   public function index(Request $request)
   {
-    try {
-      $query = HistorialTicket::with(['ticket', 'persona'])
-        ->orderByDesc('fecha_cambio');
+    $query = HistorialTicket::with(['ticket', 'persona']);
 
-      // Aplicar filtros
-      $this->applyFilters($query, $request);
-
-      $historial = $query->paginate(self::PAGINATION_LIMIT);
-
-      return view('historial-tickets.index', [
-        'historial' => $historial,
-        'tickets' => Ticket::all(),
-        'currentTicket' => $request->ticket_id ? Ticket::find($request->ticket_id) : null,
-        'error' => null
-      ]);
-    } catch (\Exception $e) {
-      Log::error('Error al obtener historial de tickets: ' . $e->getMessage());
-
-      // Devolver la vista con mensaje de error en lugar de redirección
-      return view('historial-tickets.index', [
-        'historial' => collect(), // Colección vacía
-        'tickets' => Ticket::all(),
-        'currentTicket' => null,
-        'error' => 'Ocurrió un error al cargar el historial'
-      ]);
+    // Aplicar filtros si existen
+    if ($request->ticket_id) {
+        $query->where('tickets_idtickets', $request->ticket_id);
     }
+
+    if ($request->fecha_inicio && $request->fecha_fin) {
+        $query->whereBetween('fecha_cambio', [
+            Carbon::parse($request->fecha_inicio)->startOfDay(),
+            Carbon::parse($request->fecha_fin)->endOfDay()
+        ]);
+    }
+
+    // Obtener los resultados paginados
+    $historial = $query->paginate(10);
+
+    // Obtener los tickets para el filtro
+    $tickets = Ticket::all();
+
+    return view('tickets.index', compact('historial', 'tickets'));
   }
 
   /**
@@ -176,5 +171,15 @@ class HistorialTicketController extends Controller
         Carbon::parse($request->fecha_fin)->endOfDay()
       ]);
     }
+  }
+
+  public function ticket()
+  {
+    return $this->belongsTo(Ticket::class, 'tickets_idtickets');
+  }
+
+  public function persona()
+  {
+    return $this->belongsTo(Persona::class, 'personas_id');
   }
 }

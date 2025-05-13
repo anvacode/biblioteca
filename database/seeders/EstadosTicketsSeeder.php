@@ -9,52 +9,21 @@ class EstadosTicketsSeeder extends Seeder
 {
     public function run()
     {
-        // 1. Estados base (fijos)
-        $estadosBase = [
-            [
-                'nombre_estado' => 'Nuevo',
-                'color' => '#3490dc', // Azul
-                'orden' => 1,
-                'activo' => true
-            ],
-            [
-                'nombre_estado' => 'En Progreso',
-                'color' => '#f6993f', // Naranja
-                'orden' => 2,
-                'activo' => true
-            ],
-            [
-                'nombre_estado' => 'Resuelto',
-                'color' => '#38c172', // Verde
-                'orden' => 3,
-                'activo' => true
-            ],
-            [
-                'nombre_estado' => 'Cerrado',
-                'color' => '#6c757d', // Gris
-                'orden' => 4,
-                'activo' => true
-            ],
-            [
-                'nombre_estado' => 'Cancelado',
-                'color' => '#e3342f', // Rojo
-                'orden' => 5,
-                'activo' => false 
-            ]
+        $estados = [
+            ['nombre_estado' => 'Pendiente', 'color' => '#ffcc00', 'orden' => 1, 'activo' => true],
+            ['nombre_estado' => 'En Análisis', 'color' => '#ff9900', 'orden' => 2, 'activo' => true],
+            ['nombre_estado' => 'Priorizado', 'color' => '#ff6600', 'orden' => 3, 'activo' => true],
+            ['nombre_estado' => 'En Desarrollo', 'color' => '#ff3300', 'orden' => 4, 'activo' => true],
+            ['nombre_estado' => 'En Testing', 'color' => '#ff0000', 'orden' => 5, 'activo' => true],
+            ['nombre_estado' => 'Aprobado', 'color' => '#00cc00', 'orden' => 6, 'activo' => true],
+            ['nombre_estado' => 'Rechazado', 'color' => '#cc0000', 'orden' => 7, 'activo' => true],
         ];
 
-        foreach ($estadosBase as $estado) {
-            EstadoTicket::firstOrCreate(
-                ['nombre_estado' => $estado['nombre_estado']],
-                $estado
+        foreach ($estados as $estado) {
+            EstadoTicket::updateOrCreate(
+                ['nombre_estado' => $estado['nombre_estado']], // Condición para buscar duplicados
+                $estado // Datos a insertar o actualizar
             );
-        }
-
-        // 2. Estados aleatorios 
-        if (app()->environment('local')) {
-            EstadoTicket::factory()
-                ->count(3) 
-                ->create();
         }
     }
 }

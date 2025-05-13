@@ -19,15 +19,15 @@ class HistorialTicket extends Model
         'persona_responsable',
     ];
 
-    // Relación con la tabla `personas`
-    public function persona()
-    {
-        return $this->belongsTo(Persona::class, 'personas_id');
-    }
-
     // Relación con la tabla `tickets`
     public function ticket()
     {
         return $this->belongsTo(Ticket::class, 'tickets_idtickets');
+    }
+
+    // Relación con la tabla `personas`
+    public function persona()
+    {
+        return $this->belongsTo(Persona::class, 'personas_id');
     }
 }

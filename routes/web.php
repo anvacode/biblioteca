@@ -37,20 +37,13 @@ Route::middleware(['auth'])->group(function () {
     | Ticket Management Routes
     |--------------------------------------------------------------------------
     */
-    Route::prefix('tickets')->group(function () {
-        Route::resource('/', TicketController::class)
-            ->except(['edit', 'update', 'destroy'])
-            ->names('tickets');
-            
-        Route::patch('/{ticket}/status', [TicketController::class, 'updateStatus'])
-            ->name('tickets.update-status');
-            
-        Route::post('/{ticket}/comment', [TicketController::class, 'addComment'])
-            ->name('tickets.add-comment');
-            
-        Route::get('/api/list', [TicketController::class, 'apiTickets'])
-            ->name('api.tickets');
-    });
+    Route::resource('tickets', TicketController::class);
+    Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+    Route::get('/tickets/{ticket}/edit', [TicketController::class, 'edit'])->name('tickets.edit');
+    Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
+    Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
+    Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
+    Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
     
     /*
     |--------------------------------------------------------------------------
@@ -58,9 +51,9 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::prefix('estados-tickets')->group(function () {
-        Route::resource('/', EstadoTicketController::class)
+        Route::resource('index', EstadoTicketController::class)
             ->names('estados-tickets')
-            ->parameters(['' => 'estados_ticket']);
+            ->parameters(['index' => 'estados_ticket']);
                 
         Route::get('/api/list', [EstadoTicketController::class, 'apiEstados'])
             ->name('api.estados-tickets');
@@ -100,6 +93,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export/{ticket}/pdf', [HistorialTicketController::class, 'exportPdf'])
             ->name('historial-tickets.export');
     });
+    
     
     /*
     |--------------------------------------------------------------------------

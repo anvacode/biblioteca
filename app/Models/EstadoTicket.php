@@ -9,26 +9,27 @@ class EstadoTicket extends Model
 {
     use HasFactory;
 
-    protected $table = 'estados_tickets';
+    protected $table = 'estados_tickets'; 
 
-    protected $fillable = ['nombre_estado', 'color', 'orden', 'activo'];
-
-    protected $casts = [
-        'activo' => 'boolean'
-    ];
+    protected $fillable = ['nombre_estado'];
 
     public function tickets()
     {
         return $this->hasMany(Ticket::class, 'estado_ticket_id');
     }
 
-    public static function getProtectedStates()
-    {
-        return ['Abierto', 'En progreso', 'Cerrado'];
-    }
+    // Define los estados protegidos
+    public static $protectedStates = ['Estado Inicial', 'Estado Final'];
 
+    // Método para verificar si el estado está protegido
     public function isProtected()
     {
-        return in_array($this->nombre_estado, self::getProtectedStates());
+        return in_array($this->nombre_estado, self::$protectedStates);
+    }
+
+    // Método para obtener los estados protegidos
+    public static function getProtectedStates()
+    {
+        return self::$protectedStates;
     }
 }

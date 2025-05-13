@@ -15,14 +15,16 @@ class DatabaseSeeder extends Seeder
         // 1. Usuarios genéricos (10 aleatorios + 1 admin)
         $this->createUsers();
 
-        // 2. Tipos de ticket (requisito para tickets)
-        $this->call(TiposTicketsSeeder::class);
-
-        // 3. Estados de ticket (requisito para tickets)
-        $this->call(EstadosTicketsSeeder::class);
-
-        // 4. (Opcional) Tickets u otros seeders...
-        // $this->call(TicketsSeeder::class);
+        // 2. Seeders
+        $this->call([
+            PersonasSeeder::class, // Seeder para personas (requisito para tickets)
+            MaterialesSeeder::class, // Seeder para materiales (requisito para reservas)
+            EstadoSeeder::class, // Seeder para estados (requisito para reservas)
+            TiposTicketsSeeder::class, // Seeder para tipos de tickets (requisito para tickets)
+            EstadosTicketsSeeder::class, // Seeder para estados de tickets (requisito para tickets)
+            TicketsSeeder::class, // Seeder para tickets
+            ReservasSeeder::class, // Seeder para reservas
+        ]);
 
         $this->showCompletionMessage();
     }
@@ -46,10 +48,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->command->info(PHP_EOL);
         $this->command->info('✅  Database seeded successfully!');
-        $this->command->info('✅  Base de datos poblada exitosamente!');
         $this->command->info('✅  База данных успешно посеяна!');
-        $this->command->info('✅  Datenbank erfolgreich befüllt!');
-        $this->command->info('✅  データベースのシーディングが完了しました！');
         $this->command->info(PHP_EOL);
     }
 }

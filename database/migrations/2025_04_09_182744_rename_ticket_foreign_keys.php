@@ -15,25 +15,24 @@ return new class extends Migration
             return;
         }
 
-        // Eliminamos DB::transaction y manejamos manualmente
         try {
-            // 1. Para estados_tickets
+            // Renombrar clave foránea para estado_ticket_id
             $this->renameForeignKey(
                 'tickets',
-                'estados_tickets',
+                'estado_ticket_id',
                 'estado_ticket_id',
                 'estados_tickets'
             );
 
-            // 2. Para tipo_tickets
+            // Renombrar clave foránea para tipo_ticket_id
             $this->renameForeignKey(
                 'tickets',
-                'tipo_tickets',
+                'tipo_ticket_id',
                 'tipo_ticket_id',
                 'tipo_tickets'
             );
         } catch (\Exception $e) {
-            Log::error('Error en migración: '.$e->getMessage());
+            Log::error('Error en migración: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -45,25 +44,25 @@ return new class extends Migration
         }
 
         try {
-            // Revertir para estado_ticket_id
+            // Revertir clave foránea para estado_ticket_id
             $this->renameForeignKey(
                 'tickets',
                 'estado_ticket_id',
-                'estados_tickets',
+                'estado_ticket_id',
                 'estados_tickets',
                 true
             );
 
-            // Revertir para tipo_ticket_id
+            // Revertir clave foránea para tipo_ticket_id
             $this->renameForeignKey(
                 'tickets',
                 'tipo_ticket_id',
-                'tipo_tickets',
+                'tipo_ticket_id',
                 'tipo_tickets',
                 true
             );
         } catch (\Exception $e) {
-            Log::error('Error al revertir migración: '.$e->getMessage());
+            Log::error('Error al revertir migración: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -93,18 +92,23 @@ return new class extends Migration
             $oldColumn
         ]);
 
-        // Ejecutar cada operación por separado sin transacción
         if (!empty($foreignKeys)) {
             $constraintName = $foreignKeys[0]->CONSTRAINT_NAME;
+
+            // Eliminar clave foránea existente
             Schema::table($tableName, function (Blueprint $table) use ($constraintName) {
-                $table->dropForeign([$constraintName]);
+                $table->dropForeign($constraintName); // Cambiado para usar string
             });
         }
 
-        Schema::table($tableName, function (Blueprint $table) use ($oldColumn, $newColumn) {
-            $table->renameColumn($oldColumn, $newColumn);
-        });
+        // Renombrar columna si es necesario
+        if ($oldColumn !== $newColumn) {
+            Schema::table($tableName, function (Blueprint $table) use ($oldColumn, $newColumn) {
+                $table->renameColumn($oldColumn, $newColumn);
+            });
+        }
 
+        // Crear nueva clave foránea si no es rollback
         if (!$isRollback) {
             Schema::table($tableName, function (Blueprint $table) use ($newColumn, $refTable) {
                 $table->foreign($newColumn)

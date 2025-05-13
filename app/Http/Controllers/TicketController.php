@@ -23,37 +23,12 @@ class TicketController extends Controller
     /**
      * Display a listing of tickets with filters.
      * 
-     * @param Request $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index()
     {
-        try {
-            $query = Ticket::with(['persona', 'estadoTicket', 'tipoTicket'])
-                ->orderByDesc('created_at');
-
-            // Apply filters
-            $this->applyFilters($query, $request);
-
-            $tickets = $query->paginate(self::PAGINATION_LIMIT);
-
-            return view('tickets.index', [
-                'tickets' => $tickets,
-                'estados' => EstadoTicket::all(),
-                'tipos' => TipoTicket::all(),
-                'currentEstado' => $request->estado,
-                'currentTipo' => $request->tipo
-            ]);
-
-        } catch (\Exception $e) {
-            report($e);
-            return view('tickets.index', [
-                'tickets' => collect(),
-                'estados' => EstadoTicket::all(),
-                'tipos' => TipoTicket::all(),
-                'error' => 'Error al cargar los tickets'
-            ]);
-        }
+        $tickets = Ticket::with(['estadoTicket', 'tipoTicket', 'persona'])->get();
+        return view('tickets.index', compact('tickets'));
     }
 
     /**
@@ -63,11 +38,11 @@ class TicketController extends Controller
      */
     public function create()
     {
-        return view('tickets.create', [
-            'personas' => Persona::orderBy('nombre')->get(),
-            'estados' => EstadoTicket::all(),
-            'tipos' => TipoTicket::all()
-        ]);
+        $personas = Persona::orderBy('nombre')->get();
+        $estados = EstadoTicket::all();
+        $tipos = TipoTicket::all();
+
+        return view('tickets.create', compact('personas', 'estados', 'tipos'));
     }
 
     /**
@@ -79,10 +54,11 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'estado_ticket_id' => 'required|exists:estados_tickets,id',
+            'tipo_ticket_id' => 'required|exists:tipo_tickets,id',
             'personas_id' => 'required|exists:personas,id',
-            'estados_tickets_id' => 'required|exists:estados_tickets,id',
-            'tipo_tickets_id' => 'required|exists:tipo_tickets,id',
-            'comentario' => 'required|string|max:'.self::MAX_COMMENT_LENGTH
         ]);
 
         if ($validator->fails()) {
@@ -91,28 +67,16 @@ class TicketController extends Controller
                 ->withInput();
         }
 
-        try {
-            $ticket = Ticket::create($request->only([
-                'personas_id',
-                'estados_tickets_id',
-                'tipo_tickets_id'
-            ]));
+        Ticket::create([
+            'titulo' => $request->titulo,
+            'descripcion' => $request->descripcion,
+            'estado_ticket_id' => $request->estado_ticket_id,
+            'tipo_ticket_id' => $request->tipo_ticket_id,
+            'personas_id' => $request->personas_id,
+            'user_id' => Auth::id(), // Agregar el ID del usuario autenticado
+        ]);
 
-            // Register in history
-            HistorialTicket::create([
-                'tickets_idtickets' => $ticket->id,
-                'personas_id' => Auth::id() ?? $request->personas_id,
-                'comentario' => $request->comentario,
-                'fecha_cambio' => now()
-            ]);
-
-            return redirect()->route('tickets.show', $ticket)
-                ->with('success', 'Ticket creado exitosamente!');
-
-        } catch (\Exception $e) {
-            report($e);
-            return back()->with('error', 'Error al crear el ticket')->withInput();
-        }
+        return redirect()->route('tickets.index')->with('success', 'Ticket creado exitosamente.');
     }
 
     /**
@@ -121,13 +85,55 @@ class TicketController extends Controller
      * @param Ticket $ticket
      * @return \Illuminate\View\View
      */
-    public function show(Ticket $ticket)
+    public function show($id)
     {
-        return view('tickets.show', [
-            'ticket' => $ticket->load(['historial.persona', 'estadoTicket', 'tipoTicket']),
-            'estados' => EstadoTicket::all(),
-            'closableStates' => self::CLOSABLE_STATES
+        $ticket = Ticket::with(['estadoTicket', 'tipoTicket', 'persona'])->findOrFail($id);
+        return view('tickets.show', compact('ticket'));
+    }
+
+    /**
+     * Show the form for editing the specified ticket.
+     * 
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
+    public function edit($id)
+    {
+        $ticket = Ticket::with(['estadoTicket', 'tipoTicket', 'persona'])->findOrFail($id);
+        $personas = Persona::orderBy('nombre')->get();
+        $estados = EstadoTicket::all();
+        $tipos = TipoTicket::all();
+
+        return view('tickets.edit', compact('ticket', 'personas', 'estados', 'tipos'));
+    }
+
+    /**
+     * Update the specified ticket.
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'estado_ticket_id' => 'required|exists:estados_tickets,id', // Cambiado a 'estados_tickets'
+            'tipo_ticket_id' => 'required|exists:tipo_tickets,id',
+            'personas_id' => 'required|exists:personas,id',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $ticket = Ticket::findOrFail($id);
+        $ticket->update($request->only(['titulo', 'descripcion', 'estado_ticket_id', 'tipo_ticket_id', 'personas_id']));
+
+        return redirect()->route('tickets.index')->with('success', 'Ticket actualizado exitosamente.');
     }
 
     /**
@@ -140,12 +146,12 @@ class TicketController extends Controller
     public function updateStatus(Request $request, Ticket $ticket)
     {
         $request->validate([
-            'estados_tickets_id' => 'required|exists:estados_tickets,id',
-            'comentario' => 'required_if:estados_tickets_id,'.EstadoTicket::where('nombre_estado', 'Cerrado')->first()->id
+            'estado_ticket_id' => 'required|exists:estado_tickets,id',
+            'comentario' => 'required_if:estado_ticket_id,' . EstadoTicket::where('nombre_estado', 'Cerrado')->value('id')
         ]);
 
         try {
-            $nuevoEstado = EstadoTicket::findOrFail($request->estados_tickets_id);
+            $nuevoEstado = EstadoTicket::findOrFail($request->estado_ticket_id);
 
             // Validate state transition
             if ($nuevoEstado->nombre_estado == 'Cerrado' && 
@@ -153,7 +159,7 @@ class TicketController extends Controller
                 return back()->with('error', 'No puedes cerrar un ticket en estado actual.');
             }
 
-            $ticket->update(['estados_tickets_id' => $request->estados_tickets_id]);
+            $ticket->update(['estados_tickets_id' => $request->estado_ticket_id]);
 
             // Register in history
             HistorialTicket::create([
@@ -243,6 +249,24 @@ class TicketController extends Controller
             $query->whereHas('tipoTicket', function($q) use ($request) {
                 $q->where('nombre_tipo', $request->tipo);
             });
+        }
+    }
+
+    /**
+     * Remove the specified ticket.
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy($id)
+    {
+        try {
+            $ticket = Ticket::findOrFail($id);
+            $ticket->delete();
+
+            return redirect()->route('tickets.index')->with('success', 'Ticket eliminado exitosamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('tickets.index')->with('error', 'Ocurrió un error al intentar eliminar el ticket.');
         }
     }
 }

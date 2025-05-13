@@ -16,11 +16,12 @@ class ReservasSeeder extends Seeder
         // Obtener personas, materiales y estados existentes
         $personas = Persona::all();
         $materiales = Material::all();
-        $estados = Estado::all(); // Usar el modelo Estado para obtener los registros
+        $estados = Estado::all();
 
         // Verificar que las colecciones no estén vacías
         if ($personas->isEmpty() || $materiales->isEmpty() || $estados->isEmpty()) {
-            throw new \Exception('Asegúrate de que las tablas `personas`, `materiales` y `estados` estén pobladas.');
+            $this->command->warn('No se pueden crear reservas porque faltan datos en las tablas relacionadas.');
+            return;
         }
 
         // Crear reservas
@@ -29,8 +30,10 @@ class ReservasSeeder extends Seeder
                 'fecha_reserva' => Carbon::now()->addDays(rand(1, 30)),
                 'estado' => $estados->random()->nombre,
                 'personas_id' => $persona->id,
-                'materiales_id' => $materiales->random()->id, // Asegúrate de que se asigne un material válido
+                'materiales_id' => $materiales->random()->id,
             ]);
         }
+
+        $this->command->info('Reservas creadas exitosamente.');
     }
 }

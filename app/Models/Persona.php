@@ -43,4 +43,8 @@ class Persona extends Model
     {
         return $this->hasMany(Mantenimiento::class, 'mantenimiento_id');
     }
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class, 'personas_id'); // O 'persona_id' según corresponda
+    }
 }

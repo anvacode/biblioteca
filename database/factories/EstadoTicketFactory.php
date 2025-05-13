@@ -6,22 +6,30 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EstadoTicketFactory extends Factory
 {
+    private static $estadoIndex = 0;
+
     public function definition()
     {
+        $estados = [
+            'Pendiente',
+            'En Análisis',
+            'Priorizado',
+            'En Desarrollo',
+            'En Testing',
+            'Aprobado',
+            'Rechazado'
+        ];
+
+        // Garantiza que no se repitan los valores
+        $nombreEstado = $estados[self::$estadoIndex % count($estados)];
+        self::$estadoIndex++;
+
         return [
-            'nombre_estado' => $this->faker->unique()->randomElement([
-                'Pendiente',
-                'En Análisis',
-                'Priorizado',
-                'En Desarrollo',
-                'En Testing',
-                'Aprobado',
-                'Rechazado'
-            ]),
+            'nombre_estado' => $nombreEstado,
             'color' => $this->faker->hexColor(),
-            'orden' => $this->faker->unique()->numberBetween(1, 10),
-            'activo' => $this->faker->boolean(90), // 90% de probabilidad de estar activo
-            'deleted_at' => $this->faker->optional(10)->dateTime() // 10% de probabilidad de estar "eliminado"
+            'orden' => $this->faker->numberBetween(1, 100),
+            'activo' => $this->faker->boolean(90),
+            'deleted_at' => $this->faker->optional(10)->dateTime()
         ];
     }
 }

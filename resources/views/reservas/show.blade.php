@@ -33,7 +33,7 @@
                     </td>
                 </tr>
             </table>
-            <a href="{{ route('reservas.index') }}" class="btn btn-secondary">
+            <a href="{{ route('reservas.index') }}" class="btn btn-secondary mt-3">
                 <i class="fas fa-arrow-left"></i> Volver al Listado
             </a>
         </div>

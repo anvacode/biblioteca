@@ -16,17 +16,17 @@ return new class extends Migration
             $table->text('descripcion');
             $table->integer('prioridad')->default(3); // 1-5
             
-            // Relaciones (usa nombres consistentes)
-            $table->unsignedBigInteger('estados_tickets'); // Nombre original
-            $table->unsignedBigInteger('tipo_tickets'); // Nombre original
-            $table->foreignId('user_id')->constrained();
+            // Relaciones (ajustadas para seguir las convenciones)
+            $table->unsignedBigInteger('estado_ticket_id');
+            $table->foreign('estado_ticket_id')->references('id')->on('estados_tickets')->onDelete('cascade');
+
+            $table->unsignedBigInteger('tipo_ticket_id');
+            $table->foreign('tipo_ticket_id')->references('id')->on('tipo_tickets')->onDelete('cascade');
+
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Relación con usuarios
             
             $table->timestamps();
             $table->softDeletes();
-            
-            // Índices
-            $table->index('estados_tickets');
-            $table->index('tipo_tickets');
         });
     }
 
