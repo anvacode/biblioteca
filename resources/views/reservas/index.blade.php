@@ -118,17 +118,19 @@ $(document).ready(function() {
         });
     @endif
 
-    // Configuración de DataTables
-    $('.datatable').DataTable({
-        responsive: true,
-        autoWidth: false,
-        language: {
-            url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
-        },
-        columnDefs: [
-            { targets: [4, 5], className: "text-center" }
-        ]
-    });
+    // Verificar si la tabla ya está inicializada
+    if (!$.fn.DataTable.isDataTable('.datatable')) {
+        $('.datatable').DataTable({
+            responsive: true,
+            autoWidth: false,
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+            },
+            columnDefs: [
+                { targets: [4, 5], className: "text-center" }
+            ]
+        });
+    }
 
     // Confirmación de eliminación con SweetAlert2
     $(document).on('click', '.btn-delete', function(e) {

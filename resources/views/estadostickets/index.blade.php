@@ -135,9 +135,11 @@
 @endpush
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $(document).ready(function() {
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        // Verificar si la tabla ya está inicializada
+        if (!$.fn.DataTable.isDataTable('.datatable')) {
             $('.datatable').DataTable({
                 responsive: true,
                 autoWidth: false,
@@ -154,116 +156,117 @@
                     [0, 'asc']
                 ]
             });
+        }
 
-            $(document).on('click', '.btn-status:not(:disabled)', function(e) {
-                e.preventDefault();
-                const button = $(this);
-                const estadoId = button.data('id');
-                const url = `/estados-tickets/${estadoId}/status`;
-                const newEstado = button.data('estado') ? 0 : 1;
+        $(document).on('click', '.btn-status:not(:disabled)', function(e) {
+            e.preventDefault();
+            const button = $(this);
+            const estadoId = button.data('id');
+            const url = `/estados-tickets/${estadoId}/status`;
+            const newEstado = button.data('estado') ? 0 : 1;
 
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: `¿Deseas cambiar el estado a ${newEstado ? 'Activo' : 'Inactivo'}?`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Sí, cambiar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        button.addClass('animate__animated animate__pulse');
-                        button.prop('disabled', true);
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: `¿Deseas cambiar el estado a ${newEstado ? 'Activo' : 'Inactivo'}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, cambiar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    button.addClass('animate__animated animate__pulse');
+                    button.prop('disabled', true);
 
-                        $.ajax({
-                            url: url,
-                            type: 'POST',
-                            data: {
-                                _method: 'PATCH',
-                                estado: newEstado,
-                                _token: "{{ csrf_token() }}"
-                            },
-                            success: function(response) {
-                                if (response.success) {
-                                    button.data('estado', newEstado ? 1 : 0)
-                                        .removeClass('btn-success btn-danger')
-                                        .addClass(newEstado ? 'btn-success' : 'btn-danger')
-                                        .html(
-                                            `<i class="fas ${newEstado ? 'fa-check' : 'fa-times'} mr-1"></i> ${newEstado ? 'Activo' : 'Inactivo'}`
-                                        );
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: '¡Estado actualizado!',
-                                        text: response.message,
-                                        timer: 1500,
-                                        showConfirmButton: false
-                                    });
-                                }
-                                button.prop('disabled', false);
-                            },
-                            error: function(xhr) {
-                                console.error('Error:', xhr.responseJSON);
-                                button.prop('disabled', false);
-                                Swal.fire('Error', xhr.responseJSON?.message || 'Error al actualizar el estado', 'error');
-                            },
-                            complete: function() {
-                                button.removeClass('animate__animated animate__pulse');
-                            }
-                        });
-                    }
-                });
-            });
-
-            $(document).on('click', '.delete-btn', function() {
-                const button = $(this);
-                const estadoId = button.data('id');
-                const url = "{{ route('estados-tickets.destroy', ':id') }}".replace(':id', estadoId);
-
-                Swal.fire({
-                    title: '¿Confirmar eliminación?',
-                    text: "¡Esta acción no se puede deshacer!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: url,
-                            method: 'POST',
-                            data: {
-                                _method: 'DELETE',
-                                _token: "{{ csrf_token() }}"
-                            },
-                            beforeSend: () => {
-                                button.prop('disabled', true);
-                                Swal.showLoading();
-                            },
-                            success: (response) => {
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {
+                            _method: 'PATCH',
+                            estado: newEstado,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                button.data('estado', newEstado ? 1 : 0)
+                                    .removeClass('btn-success btn-danger')
+                                    .addClass(newEstado ? 'btn-success' : 'btn-danger')
+                                    .html(
+                                        `<i class="fas ${newEstado ? 'fa-check' : 'fa-times'} mr-1"></i> ${newEstado ? 'Activo' : 'Inactivo'}`
+                                    );
                                 Swal.fire({
                                     icon: 'success',
-                                    title: '¡Eliminado!',
-                                    text: response.success,
+                                    title: '¡Estado actualizado!',
+                                    text: response.message,
                                     timer: 1500,
                                     showConfirmButton: false
-                                }).then(() => {
-                                    location.reload();
                                 });
-                            },
-                            error: (xhr) => {
-                                const errorMsg = xhr.responseJSON?.error ||
-                                    'Error al eliminar el estado';
-                                Swal.fire('Error', errorMsg, 'error');
-                                button.prop('disabled', false);
                             }
-                        });
-                    }
-                });
+                            button.prop('disabled', false);
+                        },
+                        error: function(xhr) {
+                            console.error('Error:', xhr.responseJSON);
+                            button.prop('disabled', false);
+                            Swal.fire('Error', xhr.responseJSON?.message || 'Error al actualizar el estado', 'error');
+                        },
+                        complete: function() {
+                            button.removeClass('animate__animated animate__pulse');
+                        }
+                    });
+                }
             });
         });
-    </script>
+
+        $(document).on('click', '.delete-btn', function() {
+            const button = $(this);
+            const estadoId = button.data('id');
+            const url = "{{ route('estados-tickets.destroy', ':id') }}".replace(':id', estadoId);
+
+            Swal.fire({
+                title: '¿Confirmar eliminación?',
+                text: "¡Esta acción no se puede deshacer!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: {
+                            _method: 'DELETE',
+                            _token: "{{ csrf_token() }}"
+                        },
+                        beforeSend: () => {
+                            button.prop('disabled', true);
+                            Swal.showLoading();
+                        },
+                        success: (response) => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Eliminado!',
+                                text: response.success,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: (xhr) => {
+                            const errorMsg = xhr.responseJSON?.error ||
+                                'Error al eliminar el estado';
+                            Swal.fire('Error', errorMsg, 'error');
+                            button.prop('disabled', false);
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
 @endpush

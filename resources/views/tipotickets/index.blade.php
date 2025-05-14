@@ -151,17 +151,19 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Inicialización de DataTables
-    $('.datatable').DataTable({
-        responsive: true,
-        autoWidth: false,
-        language: {
-            url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
-        },
-        columnDefs: [
-            { targets: [3, 4], className: "text-center" }
-        ]
-    });
+    // Verificar si la tabla ya está inicializada
+    if (!$.fn.DataTable.isDataTable('.datatable')) {
+        $('.datatable').DataTable({
+            responsive: true,
+            autoWidth: false,
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+            },
+            columnDefs: [
+                { targets: [3, 4], className: "text-center" }
+            ]
+        });
+    }
 
     // Manejo del cambio de estado
     $(document).on('click', '.btn-status', function(e) {

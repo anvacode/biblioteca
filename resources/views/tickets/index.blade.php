@@ -181,19 +181,21 @@
             confirmButtonText: 'Aceptar'
         });
     @endif
-</script>
-<script>
-$(document).ready(function() {
-    $('.datatable').DataTable({
-        responsive: true,
-        autoWidth: false,
-        language: {
-            url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
-        },
-        columnDefs: [
-            { targets: [2, 5], className: "text-center" }
-        ]
+
+    $(document).ready(function() {
+        // Verificar si la tabla ya está inicializada
+        if (!$.fn.DataTable.isDataTable('.datatable')) {
+            $('.datatable').DataTable({
+                responsive: true,
+                autoWidth: false,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                },
+                columnDefs: [
+                    { targets: [2, 5], className: "text-center" }
+                ]
+            });
+        }
     });
-});
 </script>
 @endpush
