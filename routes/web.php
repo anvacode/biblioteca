@@ -40,6 +40,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('tickets', TicketController::class);
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     Route::get('/tickets/{ticket}/edit', [TicketController::class, 'edit'])->name('tickets.edit');
+
+    Route::get('/tickets/{ticket}/pdf', [TicketController::class, 'generatePDF'])->name('tickets.pdf');
+    Route::get('/tickets/print/all', [TicketController::class, 'printAll'])->name('tickets.printAll');
+    
     Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
     Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
     Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');

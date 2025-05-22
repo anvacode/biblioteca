@@ -51,6 +51,14 @@
                     </a>
                 </li>
 
+                <!-- PDF -->
+                <li class="nav-item">
+                    <a href="{{ route('tipotickets.index') }}" class="nav-link {{ request()->routeIs('tipotickets.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-file-pdf"></i>
+                        <p>PDF</p>
+                    </a>
+                </li>
+
                 <!-- Divider -->
                 <li class="nav-header mt-2">CONFIGURACIÓN</li>
 

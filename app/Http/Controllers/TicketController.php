@@ -10,6 +10,7 @@ use App\Models\HistorialTicket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\PDF;
 use DataTables;
 use Carbon\Carbon;
 
@@ -154,8 +155,10 @@ class TicketController extends Controller
             $nuevoEstado = EstadoTicket::findOrFail($request->estado_ticket_id);
 
             // Validate state transition
-            if ($nuevoEstado->nombre_estado == 'Cerrado' && 
-                !in_array($ticket->estadoTicket->nombre_estado, self::CLOSABLE_STATES)) {
+            if (
+                $nuevoEstado->nombre_estado == 'Cerrado' &&
+                !in_array($ticket->estadoTicket->nombre_estado, self::CLOSABLE_STATES)
+            ) {
                 return back()->with('error', 'No puedes cerrar un ticket en estado actual.');
             }
 
@@ -165,12 +168,11 @@ class TicketController extends Controller
             HistorialTicket::create([
                 'tickets_idtickets' => $ticket->id,
                 'personas_id' => Auth::id(),
-                'comentario' => $request->comentario ?? 'Cambio de estado a '.$nuevoEstado->nombre_estado,
+                'comentario' => $request->comentario ?? 'Cambio de estado a ' . $nuevoEstado->nombre_estado,
                 'fecha_cambio' => now()
             ]);
 
             return back()->with('success', 'Estado actualizado!');
-
         } catch (\Exception $e) {
             report($e);
             return back()->with('error', 'Error al actualizar el estado');
@@ -187,7 +189,7 @@ class TicketController extends Controller
     public function addComment(Request $request, Ticket $ticket)
     {
         $request->validate([
-            'comentario' => 'required|string|max:'.self::MAX_COMMENT_LENGTH
+            'comentario' => 'required|string|max:' . self::MAX_COMMENT_LENGTH
         ]);
 
         try {
@@ -199,7 +201,6 @@ class TicketController extends Controller
             ]);
 
             return back()->with('success', 'Comentario agregado!');
-
         } catch (\Exception $e) {
             report($e);
             return back()->with('error', 'Error al agregar el comentario');
@@ -218,13 +219,12 @@ class TicketController extends Controller
             $query = Ticket::with(['persona', 'estadoTicket', 'tipoTicket']);
 
             if ($request->has('estado')) {
-                $query->whereHas('estadoTicket', function($q) use ($request) {
+                $query->whereHas('estadoTicket', function ($q) use ($request) {
                     $q->where('nombre_estado', $request->estado);
                 });
             }
 
             return datatables()->eloquent($query)->toJson();
-
         } catch (\Exception $e) {
             report($e);
             return response()->json(['error' => 'Error al cargar los datos'], 500);
@@ -240,13 +240,13 @@ class TicketController extends Controller
     private function applyFilters($query, Request $request)
     {
         if ($request->estado) {
-            $query->whereHas('estadoTicket', function($q) use ($request) {
+            $query->whereHas('estadoTicket', function ($q) use ($request) {
                 $q->where('nombre_estado', $request->estado);
             });
         }
 
         if ($request->tipo) {
-            $query->whereHas('tipoTicket', function($q) use ($request) {
+            $query->whereHas('tipoTicket', function ($q) use ($request) {
                 $q->where('nombre_tipo', $request->tipo);
             });
         }
@@ -268,5 +268,36 @@ class TicketController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('tickets.index')->with('error', 'Ocurrió un error al intentar eliminar el ticket.');
         }
+    }
+
+    public function generatePDF(Ticket $ticket)
+    {
+        $pdf = PDF::loadView('tickets.pdf', compact('ticket'))->setPaper('letter');
+        return $pdf->stream('ticket_' . $ticket->id . '.pdf');
+    }
+
+    public function printAll()
+    {
+        // Cargar todos los tickets con paginación
+        $tickets = Ticket::with(['estadoTicket', 'tipoTicket', 'persona'])
+            ->orderBy('created_at', 'desc')
+            ->chunk(100, function ($chunk) {
+                // Procesar en chunks para evitar memory limits
+            });
+
+        // Cargar todos los tickets con sus relaciones
+        $tickets = Ticket::with(['estadoTicket', 'tipoTicket', 'persona'])->get();
+
+        // Verificar si hay tickets
+        if ($tickets->isEmpty()) {
+            return redirect()->back()->with('warning', 'No hay tickets para imprimir');
+        }
+
+        $pdf = PDF::loadView('tickets.printAll', compact('tickets'))
+            ->setPaper('letter', 'landscape')
+            ->setOption('isHtml5ParserEnabled', true)
+            ->setOption('isRemoteEnabled', true);
+
+        return $pdf->stream('todos_los_tickets.pdf');
     }
 }
