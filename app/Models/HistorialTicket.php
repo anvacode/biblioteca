@@ -5,6 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\HistorialTicket
+ *
+ * @property int $id
+ * @property int $tipo_ticket_id
+ * @property string|null $accion
+ * @property string|null $comentario
+ * @property string|null $detalles
+ * @property int $user_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read \App\Models\Ticket $ticket
+ * @property-read \App\Models\User $usuario
+ */
 class HistorialTicket extends Model
 {
     use HasFactory;
@@ -12,22 +27,34 @@ class HistorialTicket extends Model
     protected $table = 'historial_tickets';
 
     protected $fillable = [
-        'personas_id',
-        'tickets_idtickets',
-        'fecha_cambio',
+        'tipo_ticket_id',
+        'accion',
         'comentario',
-        'persona_responsable',
+        'detalles',
+        'user_id',
     ];
 
-    // Relación con la tabla `tickets`
+    /**
+     * Casts para fechas
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    /**
+     * Relación con la tabla `tickets`
+     */
     public function ticket()
     {
-        return $this->belongsTo(Ticket::class, 'tickets_idtickets');
+        return $this->belongsTo(Ticket::class, 'tipo_ticket_id');
     }
 
-    // Relación con la tabla `personas`
-    public function persona()
+    /**
+     * Relación con la tabla `users`
+     */
+    public function usuario()
     {
-        return $this->belongsTo(Persona::class, 'personas_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
