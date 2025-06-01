@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\PDF;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TicketsExport;
 use DataTables;
 use Carbon\Carbon;
 
@@ -299,5 +301,15 @@ class TicketController extends Controller
             ->setOption('isRemoteEnabled', true);
 
         return $pdf->stream('todos_los_tickets.pdf');
+    }
+
+    public function excel(Request $request)
+    {
+        $fileName = 'tickets_' . now()->format('Y-m-d_His') . '.xlsx';
+
+        return Excel::download(new TicketsExport(), $fileName, \Maatwebsite\Excel\Excel::XLSX, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"'
+        ]);
     }
 }

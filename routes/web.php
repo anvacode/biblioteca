@@ -38,16 +38,13 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::resource('tickets', TicketController::class);
-    Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
-    Route::get('/tickets/{ticket}/edit', [TicketController::class, 'edit'])->name('tickets.edit');
-
-    Route::get('/tickets/{ticket}/pdf', [TicketController::class, 'generatePDF'])->name('tickets.pdf');
-    Route::get('/tickets/print/all', [TicketController::class, 'printAll'])->name('tickets.printAll');
     
-    Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
-    Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
-    Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
-    Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+    // Rutas adicionales para tickets
+    Route::prefix('tickets')->group(function () {
+        Route::get('/{ticket}/pdf', [TicketController::class, 'generatePDF'])->name('tickets.pdf');
+        Route::get('/print/all', [TicketController::class, 'printAll'])->name('tickets.printAll');
+        Route::get('/export/excel', [TicketController::class, 'excel'])->name('tickets.excel');
+    });
     
     /*
     |--------------------------------------------------------------------------
@@ -98,13 +95,12 @@ Route::middleware(['auth'])->group(function () {
             ->name('historial-tickets.export');
     });
     
-    
     /*
     |--------------------------------------------------------------------------
     | Ticket Type Routes
     |--------------------------------------------------------------------------
     */
     Route::resource('tipotickets', TipoTicketController::class);
-    Route::patch('tipotickets/{id}/status', [TipoTicketController::class, 'updateStatus'])
+    Route::patch('tipotickets/{tipoticket}/status', [TipoTicketController::class, 'updateStatus'])
         ->name('tipotickets.update-status');
 });

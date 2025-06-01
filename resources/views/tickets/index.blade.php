@@ -13,6 +13,10 @@
                         target="_blank">
                         <i class="fas fa-print"></i> Imprimir Todos
                     </a>
+                    <a href="{{ route('tickets.excel') }}" class="btn btn-light text-primary font-weight-bold"
+                        target="_blank">
+                        <i class="fas fa-file-excel"></i> Exportar Excel
+                    </a>
                 </div>
             </div>
             <div class="card-body">
